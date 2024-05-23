@@ -15,9 +15,11 @@ import { MobileDatePicker, MobileTimePicker } from '@mui/x-date-pickers'
 import dayjs from 'dayjs'
 import Breadcrumb from '../layout/breadcrumb'
 import { APP_ROUTES } from '@/routes/routes'
+import { useState } from 'react'
 
 const AddNewEnlonado = () => {
 	const { isPhablet } = useMediaQuery()
+	const [plateType, setPlateType] = useState<'simple' | 'full'>('simple')
 	return (
 		<Grid container spacing={2}>
 			<Breadcrumb
@@ -100,7 +102,8 @@ const AddNewEnlonado = () => {
 								<RadioGroup
 									row
 									aria-labelledby="demo-radio-buttons-group-label"
-									defaultValue="simple"
+									value={plateType}
+									onChange={(e) => setPlateType(e.target.value as 'simple' | 'full')}
 									name="radio-buttons-group"
 								>
 									<FormControlLabel value="simple" control={<Radio />} label="Sencillo" />
@@ -122,18 +125,20 @@ const AddNewEnlonado = () => {
 									/>
 								</Grid>
 
-								<Grid item xs={12} md={6} className="">
-									<TextField
-										variant="outlined"
-										margin="normal"
-										required
-										fullWidth
-										label="Plana 2"
-										size="small"
-										name="flat2"
-										id="flat2"
-									/>
-								</Grid>
+								{plateType === 'full' && (
+									<Grid item xs={12} md={6} className="">
+										<TextField
+											variant="outlined"
+											margin="normal"
+											required
+											fullWidth
+											label="Plana 2"
+											size="small"
+											name="flat2"
+											id="flat2"
+										/>
+									</Grid>
+								)}
 							</Grid>
 
 							<TextField

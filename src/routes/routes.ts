@@ -20,6 +20,16 @@ export const APP_ROUTES = {
 				title: 'Detalle de enlonado',
 				hash: (_: TemplateStringsArray, id: string) => `/app/enlonados/${id}`
 			}
+		},
+		WORK_SHIFTS: {
+			path: '/app/turnos',
+			title: 'Turnos',
+			ADD: { path: '/app/turnos/nuevo', title: 'Nuevo turno' }
+		},
+		REPORTS: {
+			path: '/app/reportes',
+			title: 'Reportes',
+			ADD: { path: '/app/reportes/nuevo', title: 'Nuevo reporte' }
 		}
 	}
 }

@@ -24,20 +24,6 @@ const theme = createTheme({
 				}
 			}
 		},
-		MuiTable: {
-			styleOverrides: {
-				root: {
-					border: '1px solid red'
-				}
-			}
-		},
-		MuiTableContainer: {
-			styleOverrides: {
-				root: {
-					border: '1px solid red'
-				}
-			}
-		},
 		MuiDrawer: {
 			styleOverrides: {
 				paper: {

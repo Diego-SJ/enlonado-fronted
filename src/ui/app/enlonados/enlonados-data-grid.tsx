@@ -5,19 +5,39 @@ import { blueGrey, deepPurple, green, lightBlue, pink } from '@mui/material/colo
 import { APP_ROUTES } from '@/routes/routes'
 
 const columns: GridColDef[] = [
-	{ field: 'id', headerName: 'ID', width: 90 },
-	{ field: 'created_by', headerName: 'Registrado por', width: 150 },
-	{ field: 'folio', headerName: 'Folio', width: 100, align: 'center' },
-	{ field: 'date', headerName: 'Fecha', width: 100 },
-	{ field: 'start_time', headerName: 'Hora inicio', width: 100, align: 'center' },
-	{ field: 'end_time', headerName: 'Hora fin', width: 100, align: 'center' },
-	{ field: 'stimated_time', headerName: 'Duración', width: 100, align: 'center' },
-	{ field: 'company', headerName: 'Empresa', width: 140, align: 'center' },
+	{ field: 'id', headerName: 'ID', width: 90, align: 'center', headerAlign: 'center' },
+	{
+		field: 'created_by',
+		headerName: 'Registrado por',
+		width: 150,
+		headerAlign: 'center',
+		align: 'center'
+	},
+	{ field: 'folio', headerName: 'Folio', width: 100, headerAlign: 'center', align: 'center' },
+	{ field: 'date', headerName: 'Fecha', width: 100, headerAlign: 'center', align: 'center' },
+	{
+		field: 'start_time',
+		headerName: 'Hora inicio',
+		width: 100,
+		headerAlign: 'center',
+		align: 'center'
+	},
+	{ field: 'end_time', headerName: 'Hora fin', width: 100, headerAlign: 'center', align: 'center' },
+	{
+		field: 'stimated_time',
+		headerName: 'Duración',
+		width: 100,
+		headerAlign: 'center',
+		align: 'center'
+	},
+	{ field: 'company', headerName: 'Empresa', width: 140, headerAlign: 'center', align: 'center' },
 	{ field: 'plates', headerName: 'Placas' },
 	{
 		field: 'flat_type',
 		headerName: 'Tipo de plana',
 		align: 'center',
+		width: 150,
+		headerAlign: 'center',
 		renderCell: (params) => {
 			let color: { [key: string]: any } = {
 				full: deepPurple.A200,
@@ -42,6 +62,7 @@ const columns: GridColDef[] = [
 		headerName: 'Forma de pago',
 		width: 150,
 		align: 'center',
+		headerAlign: 'center',
 		renderCell: (params) => {
 			let text: { [key: string]: string } = {
 				CASH: 'Efectivo',
@@ -80,6 +101,7 @@ export default function EnlonadosDataGrid() {
 			<div style={{ height: 350, width: '100%' }}>
 				<DataGrid
 					columns={columns}
+					sx={{ borderColor: 'transparent' }}
 					onRowClick={(row) => {
 						viewDetail(row.row)
 					}}

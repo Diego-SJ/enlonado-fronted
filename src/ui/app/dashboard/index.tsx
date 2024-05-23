@@ -1,4 +1,4 @@
-import { Avatar, Card, CardContent, Grid, Typography } from '@mui/material'
+import { Avatar, Card, Grid, Typography } from '@mui/material'
 import PostAddOutlinedIcon from '@mui/icons-material/PostAddOutlined'
 import { useNavigate } from 'react-router-dom'
 import { APP_ROUTES } from '@/routes/routes'

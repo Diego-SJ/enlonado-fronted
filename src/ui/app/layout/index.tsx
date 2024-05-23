@@ -22,6 +22,8 @@ import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined'
 import GridViewOutlinedIcon from '@mui/icons-material/GridViewOutlined'
 import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined'
 import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined'
+import AvTimerOutlinedIcon from '@mui/icons-material/AvTimerOutlined'
+import PieChartOutlineOutlinedIcon from '@mui/icons-material/PieChartOutlineOutlined'
 import { APP_ROUTES } from '@/routes/routes'
 
 const drawerWidth = 240
@@ -160,6 +162,20 @@ export default function MainLayout() {
 						<ListItemButton onClick={() => changeRoute(APP_ROUTES.APP.USERS.path)}>
 							<ListItemIcon>{<PeopleAltOutlinedIcon />}</ListItemIcon>
 							<ListItemText primary="Colaboradores" />
+						</ListItemButton>
+					</ListItem>
+
+					<ListItem disablePadding>
+						<ListItemButton onClick={() => changeRoute(APP_ROUTES.APP.WORK_SHIFTS.path)}>
+							<ListItemIcon>{<AvTimerOutlinedIcon />}</ListItemIcon>
+							<ListItemText primary="Turnos" />
+						</ListItemButton>
+					</ListItem>
+
+					<ListItem disablePadding>
+						<ListItemButton onClick={() => changeRoute(APP_ROUTES.APP.REPORTS.path)}>
+							<ListItemIcon>{<PieChartOutlineOutlinedIcon />}</ListItemIcon>
+							<ListItemText primary="Reportes" />
 						</ListItemButton>
 					</ListItem>
 				</List>
