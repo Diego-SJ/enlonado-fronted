@@ -2,31 +2,25 @@ import {
 	Avatar,
 	Card,
 	CardContent,
-	Divider,
-	FormControl,
 	Grid,
-	InputLabel,
 	List,
 	ListItem,
 	ListItemAvatar,
 	ListItemText,
-	MenuItem,
-	Select,
 	Typography
 } from '@mui/material'
 import PostAddOutlinedIcon from '@mui/icons-material/PostAddOutlined'
-import { useNavigate } from 'react-router-dom'
-import { APP_ROUTES } from '@/routes/routes'
+// import { useNavigate } from 'react-router-dom'
+// import { APP_ROUTES } from '@/routes/routes'
 import { blue, green, orange } from '@mui/material/colors'
-import { Gauge, LineChart, PieChart, pieArcLabelClasses } from '@mui/x-charts'
-import React from 'react'
+import { LineChart, PieChart, pieArcLabelClasses } from '@mui/x-charts'
 
 const ReportsPage = () => {
-	const navigate = useNavigate()
+	// const navigate = useNavigate()
 
-	const routeChange = () => {
-		navigate(APP_ROUTES.APP.NEW_ENLONADO.path)
-	}
+	// const routeChange = () => {
+	// 	navigate(APP_ROUTES.APP.NEW_ENLONADO.path)
+	// }
 	return (
 		<Grid container spacing={2}>
 			<Grid item xs={12} md={4} lg={4}>

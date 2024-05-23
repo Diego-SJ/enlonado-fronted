@@ -1,7 +1,5 @@
-import useMediaQuery from '@/hooks/useMediaQueries'
-import { Box, Button, Card, Chip, Divider, Grid, Tabs, TextField, Typography } from '@mui/material'
+import { Box, Card, Chip, Divider, Grid, Tabs, Typography } from '@mui/material'
 import Tab from '@mui/material/Tab'
-import { useNavigate } from 'react-router-dom'
 import { APP_ROUTES } from '@/routes/routes'
 import Breadcrumb from '../layout/breadcrumb'
 import { ReactNode, useState } from 'react'
@@ -52,7 +50,6 @@ const ItemDetail = ({ title = '', value = '' }: { title?: string; value?: string
 }
 
 const EnlonadosDetailPage = () => {
-	const navigate = useNavigate()
 	const [value, setValue] = useState(0)
 
 	const handleChange = (_: React.SyntheticEvent, newValue: number) => {

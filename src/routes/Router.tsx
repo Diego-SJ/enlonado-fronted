@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
-import AdminAuth from './AdminAuth'
+// import AdminAuth from './AdminAuth'
 import { APP_ROUTES } from './routes'
 import LoginPage from '@/ui/auth/login'
 import MainLayout from '@/ui/app/layout'

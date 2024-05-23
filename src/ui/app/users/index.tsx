@@ -1,4 +1,3 @@
-import useMediaQuery from '@/hooks/useMediaQueries'
 import { Card, Grid, TextField } from '@mui/material'
 import UsersDataGrid from './users-data-grid'
 import { useNavigate } from 'react-router-dom'
@@ -6,7 +5,6 @@ import { APP_ROUTES } from '@/routes/routes'
 import Breadcrumb from '../layout/breadcrumb'
 
 const UsersPage = () => {
-	const { isPhablet } = useMediaQuery()
 	const navigate = useNavigate()
 
 	const handleAddUser = () => {
