@@ -9,7 +9,7 @@ const LoginPage = () => {
 
 	const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
-		navigate(APP_ROUTES.APP.HOME.path)
+		navigate(APP_ROUTES.APP.DASHBOARD.path)
 	}
 	return (
 		<div className="w-full grid place-content-center h-screen">

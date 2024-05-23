@@ -25,6 +25,7 @@ import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined
 import AvTimerOutlinedIcon from '@mui/icons-material/AvTimerOutlined'
 import PieChartOutlineOutlinedIcon from '@mui/icons-material/PieChartOutlineOutlined'
 import { APP_ROUTES } from '@/routes/routes'
+import useMediaQuery from '@/hooks/useMediaQueries'
 
 const drawerWidth = 240
 
@@ -84,6 +85,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 export default function MainLayout() {
 	const theme = useTheme()
 	const [open, setOpen] = React.useState(false)
+	const { isPhablet } = useMediaQuery()
 	const navigate = useNavigate()
 
 	const handleDrawerOpen = () => {
@@ -96,6 +98,13 @@ export default function MainLayout() {
 
 	const changeRoute = (route: string) => {
 		navigate(route)
+		if (isPhablet) {
+			handleDrawerClose()
+		}
+	}
+
+	const signOut = () => {
+		navigate(APP_ROUTES.AUTH.SIGN_IN.path)
 	}
 
 	return (
@@ -182,7 +191,7 @@ export default function MainLayout() {
 				<Divider />
 				<List>
 					<ListItem disablePadding>
-						<ListItemButton>
+						<ListItemButton onClick={signOut}>
 							<ListItemIcon>{<ExitToAppOutlinedIcon />}</ListItemIcon>
 							<ListItemText primary="Cerrar sesión" />
 						</ListItemButton>

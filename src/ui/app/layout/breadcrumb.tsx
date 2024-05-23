@@ -21,7 +21,7 @@ const Breadcrumb = ({ title, current, links = [], onAdd, children }: Props) => {
 	return (
 		<Grid item xs={12}>
 			<Card elevation={0}>
-				<div className="flex justify-between items-center pr-6">
+				<div className="flex justify-between pr-6 flex-col items-start md:items-center md:flex-row">
 					<div className="py-4 px-6">
 						<Typography variant="h6" sx={{ marginTop: 0 }}>
 							{title || ''}
@@ -46,16 +46,18 @@ const Breadcrumb = ({ title, current, links = [], onAdd, children }: Props) => {
 					</div>
 
 					{onAdd && (
-						<Button
-							variant="contained"
-							color="primary"
-							size="large"
-							sx={{ maxHeight: 40 }}
-							onClick={onAdd}
-							startIcon={<AddOutlinedIcon />}
-						>
-							Agregar nuevo
-						</Button>
+						<div className="px-6 mb-4 md:px-0 md:mb-0">
+							<Button
+								variant="contained"
+								color="primary"
+								size="large"
+								sx={{ maxHeight: 40 }}
+								onClick={onAdd}
+								startIcon={<AddOutlinedIcon />}
+							>
+								Agregar nuevo
+							</Button>
+						</div>
 					)}
 				</div>
 				{children && (
