@@ -1,6 +1,6 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { Avatar, Button, Typography } from '@mui/material'
-import { DeleteOutline, EditOutlined, RemoveRedEyeOutlined } from '@mui/icons-material'
+import { DeleteOutline, EditOutlined } from '@mui/icons-material'
 import { Link } from 'react-router-dom'
 import { APP_ROUTES } from '@/routes/routes'
 import useQuery from '@/hooks/useQuery'
