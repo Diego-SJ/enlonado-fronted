@@ -1,15 +1,73 @@
-import { Button, Card, Grid, TextField, Typography } from '@mui/material'
-import { MobileDatePicker } from '@mui/x-date-pickers'
-
+import {
+	Button,
+	Card,
+	FormControl,
+	FormHelperText,
+	Grid,
+	IconButton,
+	InputAdornment,
+	InputLabel,
+	MenuItem,
+	OutlinedInput,
+	Select,
+	TextField,
+	Typography
+} from '@mui/material'
+import { useForm, Controller } from 'react-hook-form'
+import { toast } from 'react-toastify'
 import Breadcrumb from '../layout/breadcrumb'
 import { APP_ROUTES } from '@/routes/routes'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useAppDispatch, useAppSelector } from '@/hooks/useStore'
+import { userActions } from '@/redux/reducers/users'
+import { User, UserRoles } from '@/redux/reducers/users/types'
+import { useEffect, useState } from 'react'
+import { Visibility, VisibilityOff } from '@mui/icons-material'
 
 const AddNewUser = () => {
+	const navigate = useNavigate()
+	const { user_id } = useParams()
+	const dispatch = useAppDispatch()
+	const { loading, data } = useAppSelector((state) => state.users)
+	const {
+		control,
+		handleSubmit,
+		reset,
+		formState: { errors }
+	} = useForm()
+	const [showPassword, setShowPassword] = useState(false)
+
+	useEffect(() => {
+		if (user_id) {
+			let user = data.find((user: User) => user.user_id === user_id)
+			if (user) {
+				reset(user)
+			}
+		}
+	}, [user_id])
+
+	const handleClickShowPassword = () => setShowPassword((show) => !show)
+
+	const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+		event.preventDefault()
+	}
+
+	const onSubmit = async (data: Partial<User>) => {
+		const result = await dispatch(userActions.createUser(data, user_id))
+
+		if (result) {
+			toast.success(`Usuario ${!!user_id ? 'actualizado' : 'creado'} con exito`)
+			navigate(APP_ROUTES.APP.USERS.path)
+		} else {
+			toast.error('Error al guardar información')
+		}
+	}
+
 	return (
 		<Grid container spacing={2}>
 			<Breadcrumb
-				title="Registrar colaborador"
-				current="Nuevo"
+				title={!!user_id ? 'Editar colaborador' : 'Nuevo colaborador'}
+				current={user_id ? 'Editar' : 'Nuevo'}
 				links={[{ name: 'Colaboradores', path: APP_ROUTES.APP.USERS.path }]}
 			/>
 
@@ -17,78 +75,161 @@ const AddNewUser = () => {
 				<Card elevation={0}>
 					<div className="px-4 pt-4 pb-6 md:px-8 md:py-10">
 						<Typography variant="h6" sx={{ marginTop: 0 }}>
-							Nuevo colaborador
+							{!!user_id ? 'Editar colaborador' : 'Nuevo colaborador'}
 						</Typography>
-						<form noValidate onSubmit={() => console.log('first')}>
+						<form onSubmit={handleSubmit(onSubmit as any)}>
 							<Grid container spacing={2}>
 								<Grid item xs={12} md={6}>
-									<TextField
-										variant="outlined"
-										margin="normal"
-										required
-										fullWidth
-										id="name"
+									<Controller
 										name="name"
-										label="Nombre (s)"
-										size="small"
-										autoFocus
+										control={control}
+										rules={{ required: 'Campo obligatorio' }}
+										render={({ field }) => (
+											<TextField
+												{...field}
+												error={!!errors.name}
+												helperText={(errors?.name?.message || null) as string}
+												variant="outlined"
+												margin="normal"
+												fullWidth
+												InputLabelProps={{ shrink: !!field.value }}
+												label="Nombre (s)"
+												size="small"
+											/>
+										)}
 									/>
 								</Grid>
 								<Grid item xs={12} md={6}>
-									<TextField
-										variant="outlined"
-										margin="normal"
-										required
-										fullWidth
-										label="Apellidos"
-										name="last_name"
-										id="last_name"
-										size="small"
-									/>
-								</Grid>
-								<Grid item xs={12} md={12}>
-									<MobileDatePicker
-										slotProps={{ textField: { size: 'small', margin: 'normal', fullWidth: true } }}
-										label="Fecha de nacimiento"
-									/>
-								</Grid>
-								<Grid item xs={12} md={6}>
-									<TextField
-										variant="outlined"
-										margin="normal"
-										fullWidth
-										label="Email"
-										name="email"
-										id="email"
-										type="email"
-										size="small"
+									<Controller
+										name="surnames"
+										control={control}
+										rules={{ required: 'Campo obligatorio' }}
+										render={({ field }) => (
+											<TextField
+												{...field}
+												error={!!errors.surnames}
+												helperText={(errors?.surnames?.message || '') as string}
+												variant="outlined"
+												margin="normal"
+												fullWidth
+												InputLabelProps={{ shrink: !!field?.value }}
+												label="Apellidos"
+												size="small"
+											/>
+										)}
 									/>
 								</Grid>
 								<Grid item xs={12} md={6}>
-									<TextField
-										variant="outlined"
-										margin="normal"
-										fullWidth
-										label="Teléfono"
+									<Controller
 										name="phone"
-										id="phone"
-										type="tel"
-										size="small"
+										control={control}
+										render={({ field }) => (
+											<TextField
+												{...field}
+												fullWidth
+												error={!!errors.phone}
+												helperText={(errors?.phone?.message || '') as string}
+												variant="outlined"
+												margin="normal"
+												InputLabelProps={{ shrink: !!field?.value }}
+												size="small"
+												label="Teléfono"
+											/>
+										)}
 									/>
 								</Grid>
-								<Grid item xs={12}>
-									<TextField
-										variant="outlined"
-										margin="normal"
-										required
-										multiline
-										maxRows={3}
-										minRows={3}
-										fullWidth
-										label="Comentarios"
-										name="comments"
-										id="comments"
-										size="small"
+								<Grid item xs={12} md={6}>
+									<Controller
+										name="role"
+										rules={{ required: 'Campo obligatorio' }}
+										control={control}
+										render={({ field }) => (
+											<FormControl fullWidth sx={{ marginTop: '16px' }}>
+												<InputLabel id="role" sx={{ mt: '-7px' }} shrink={!!field?.value}>
+													Rol
+												</InputLabel>
+												<Select
+													{...field}
+													label="Rol"
+													value={field.value || ''}
+													labelId="role"
+													error={!!errors.role}
+													size="small"
+												>
+													<MenuItem value={UserRoles.ADMIN}>Administrador</MenuItem>
+													<MenuItem value={UserRoles.EMPLOYEE}>Colaborador</MenuItem>
+													<MenuItem value={UserRoles.SUPPORT}>Ayudante</MenuItem>
+												</Select>
+												{!!errors?.role && (
+													<FormHelperText error>{errors?.role?.message as string}</FormHelperText>
+												)}
+											</FormControl>
+										)}
+									/>
+								</Grid>
+
+								<Grid item xs={12} md={6}>
+									<Controller
+										name="username"
+										control={control}
+										rules={{ required: 'Campo obligatorio' }}
+										render={({ field }) => (
+											<TextField
+												{...field}
+												error={!!errors.username}
+												helperText={errors.username ? (errors.username.message as string) : ''}
+												label="Usuario"
+												variant="outlined"
+												margin="normal"
+												fullWidth
+												InputLabelProps={{ shrink: !!field?.value }}
+												size="small"
+											/>
+										)}
+									/>
+								</Grid>
+								<Grid item xs={12} md={6}>
+									<Controller
+										name="password"
+										control={control}
+										rules={{ required: 'Campo obligatorio' }}
+										render={({ field }) => (
+											<FormControl fullWidth variant="outlined" sx={{ marginTop: '16px' }}>
+												<InputLabel
+													htmlFor="outlined-adornment-password"
+													sx={{ mt: '-7px' }}
+													shrink={!!field?.value}
+												>
+													Password
+												</InputLabel>
+												<OutlinedInput
+													{...field}
+													id="outlined-adornment-password"
+													size="small"
+													fullWidth
+													error={!!errors.password}
+													type={showPassword ? 'text' : 'password'}
+													endAdornment={
+														<InputAdornment position="end">
+															<IconButton
+																aria-label="toggle password visibility"
+																onClick={handleClickShowPassword}
+																onMouseDown={handleMouseDownPassword}
+																edge="end"
+															>
+																{showPassword ? <VisibilityOff /> : <Visibility />}
+															</IconButton>
+														</InputAdornment>
+													}
+													label="Password"
+												/>
+												{!!errors?.password && (
+													<FormHelperText error>
+														{errors?.password?.message as string}
+													</FormHelperText>
+												)}
+											</FormControl>
+										)}
 									/>
 								</Grid>
 							</Grid>
@@ -99,9 +240,10 @@ const AddNewUser = () => {
 								variant="contained"
 								color="primary"
 								size="large"
-								sx={{ marginTop: 1 }}
+								sx={{ marginTop: 3 }}
+								disabled={loading}
 							>
-								Registrar
+								{loading ? 'Cargando...' : !!user_id ? 'Guardar cambios' : 'Registrar'}
 							</Button>
 						</form>
 					</div>

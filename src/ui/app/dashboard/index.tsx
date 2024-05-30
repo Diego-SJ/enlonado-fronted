@@ -12,7 +12,7 @@ const DashboardPage = () => {
 	}
 	return (
 		<Grid container>
-			<Grid xs={12} md={12} lg={4}>
+			<Grid item xs={12} md={12} lg={4}>
 				<Card elevation={2} onClick={routeChange} sx={{ cursor: 'pointer' }}>
 					<div className="px-6 py-4">
 						<Avatar sx={{ width: 60, height: 60, bgcolor: blue.A400 }}>

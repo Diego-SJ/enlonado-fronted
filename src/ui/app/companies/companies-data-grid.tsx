@@ -1,16 +1,17 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { Avatar, Button, Typography } from '@mui/material'
-import { User } from '@/redux/reducers/users/types'
 import { DeleteOutline, EditOutlined, RemoveRedEyeOutlined } from '@mui/icons-material'
 import { Link } from 'react-router-dom'
 import { APP_ROUTES } from '@/routes/routes'
 import useQuery from '@/hooks/useQuery'
 import { toast } from 'react-toastify'
 import { useAppDispatch, useAppSelector } from '@/hooks/useStore'
-import { userActions } from '@/redux/reducers/users'
 import DeleteDialog from '@/ui/common/delete-dialog'
+import { Company } from '@/redux/reducers/companies/types'
+import { companyActions } from '@/redux/reducers/companies'
+import BusinessOutlinedIcon from '@mui/icons-material/BusinessOutlined'
 
-const columns: GridColDef<User>[] = [
+const columns: GridColDef<Company>[] = [
 	// { field: 'user_id', headerName: 'ID', width: 90, align: 'center', headerAlign: 'center' },
 	{
 		field: 'name',
@@ -18,30 +19,29 @@ const columns: GridColDef<User>[] = [
 		width: 380,
 		renderCell: ({ row = {} }) => (
 			<div className="flex gap-2 items-center h-full">
-				<Avatar sx={{ width: 30, height: 30, fontSize: 14 }}>
-					{row?.name ? row?.name[0] : 'U'}
+				<Avatar sx={{ width: 35, height: 35, fontSize: 14, padding: 1 }}>
+					<BusinessOutlinedIcon sx={{ width: 20, height: 20 }} />
 				</Avatar>{' '}
-				<Typography>{row?.name + ' ' + row?.surnames || '- - -'}</Typography>
+				<Typography>{row?.name || '- - -'}</Typography>
 			</div>
 		)
 	},
-	{ field: 'username', headerName: 'Usuario', width: 150 },
 	{ field: 'phone', headerName: 'Teléfono', width: 150 },
-	{ field: 'role', headerName: 'Rol', width: 150 },
+	{ field: 'description', headerName: 'Descripción', width: 250 },
 	{
 		field: 'user_id',
 		headerName: 'Acciones',
 		width: 350,
 		headerAlign: 'center',
 		align: 'center',
-		renderCell: ({ row = {} as User }) => (
+		renderCell: ({ row = {} as Company }) => (
 			<div className="flex justify-center gap-3 items-center h-full">
-				<Link to={APP_ROUTES.APP.USERS.EDIT.hash`${row.user_id!}`}>
+				<Link to={APP_ROUTES.APP.COMPANIES.EDIT.hash`${row.company_id!}`}>
 					<Button variant="contained" color="warning">
 						<EditOutlined sx={{ color: 'white' }} />
 					</Button>
 				</Link>
-				<Link to={APP_ROUTES.APP.USERS.path + `?user_id=${row.user_id}`}>
+				<Link to={APP_ROUTES.APP.COMPANIES.path + `?company_id=${row.company_id}`}>
 					<Button variant="contained" color="error">
 						<DeleteOutline />
 					</Button>
@@ -51,26 +51,26 @@ const columns: GridColDef<User>[] = [
 	}
 ]
 
-export default function UsersDataGrid({ data }: { data?: User[] }) {
+export default function CompaniesDataGrid({ data }: { data?: Company[] }) {
 	const query = useQuery()
 	const dispatch = useAppDispatch()
-	const { loading } = useAppSelector((state) => state.users)
-	const user_id = query.get('user_id')
+	const { loading } = useAppSelector((state) => state.companies)
+	const company_id = query.get('company_id')
 
 	const onClose = () => {
-		query.remove('user_id')
+		query.remove('company_id')
 	}
 
 	const onDelete = async () => {
-		if (!user_id) return
-		const result = await dispatch(userActions.deleteUser(user_id!))
+		if (!company_id) return
+		const result = await dispatch(companyActions.changeStatusCompany(company_id!, false))
 		if (result) {
-			toast.success('Usuario eliminado con éxito')
+			toast.success('Empresa eliminada con éxito')
 			onClose()
 			return
 		}
 
-		toast.error('Error al eliminar usuario')
+		toast.error('Error al eliminar registro')
 	}
 
 	return (
@@ -80,7 +80,7 @@ export default function UsersDataGrid({ data }: { data?: User[] }) {
 					columns={columns}
 					sx={{ borderColor: 'transparent' }}
 					rows={data || []}
-					getRowId={(row) => row.user_id}
+					getRowId={(row) => row.company_id}
 					disableRowSelectionOnClick
 					initialState={{
 						pagination: {
@@ -92,7 +92,7 @@ export default function UsersDataGrid({ data }: { data?: User[] }) {
 				/>
 			</div>
 
-			<DeleteDialog onClose={onClose} open={!!user_id} onConfirm={onDelete} loading={loading} />
+			<DeleteDialog onClose={onClose} open={!!company_id} onConfirm={onDelete} loading={loading} />
 		</div>
 	)
 }

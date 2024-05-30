@@ -1,60 +1,94 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
-import { Chip } from '@mui/material'
-import { useNavigate } from 'react-router-dom'
-import { blueGrey, deepPurple, green, lightBlue, pink } from '@mui/material/colors'
-import { APP_ROUTES } from '@/routes/routes'
 
-const columns: GridColDef[] = [
-	{ field: 'id', headerName: 'ID', width: 90, align: 'center', headerAlign: 'center' },
+import { useNavigate } from 'react-router-dom'
+import { APP_ROUTES } from '@/routes/routes'
+import {
+	ENLONADO_PAYMENT_METHOD,
+	Enlonado,
+	FLAT_TYPE,
+	PAYMENT_METHOD_TEXT
+} from '@/redux/reducers/enlonados/types'
+import Chip from '@/ui/common/chip'
+
+export const CHIP_COLOR_PM: { [key: string]: any } = {
+	[ENLONADO_PAYMENT_METHOD.CASH]: 'lime',
+	[ENLONADO_PAYMENT_METHOD.CREDIT]: 'sky',
+	[ENLONADO_PAYMENT_METHOD.PENDING]: 'yellow',
+	[ENLONADO_PAYMENT_METHOD.TRANSFER]: 'violet'
+}
+
+const columns: GridColDef<Enlonado>[] = [
 	{
-		field: 'created_by',
-		headerName: 'Registrado por',
-		width: 150,
-		headerAlign: 'center',
-		align: 'center'
+		field: 'managers',
+		headerName: 'Encargado',
+		width: 250,
+		renderCell: ({ row }) => {
+			return row?.users?.name + ' ' + row?.users?.surnames
+		}
 	},
-	{ field: 'folio', headerName: 'Folio', width: 100, headerAlign: 'center', align: 'center' },
-	{ field: 'date', headerName: 'Fecha', width: 100, headerAlign: 'center', align: 'center' },
 	{
-		field: 'start_time',
-		headerName: 'Hora inicio',
-		width: 100,
+		field: 'folio',
+		headerName: 'Folio',
+		width: 200,
 		headerAlign: 'center',
-		align: 'center'
+		align: 'center',
+		renderCell: ({ row }) => {
+			return <Chip label={row.folio} color="default" />
+		}
 	},
-	{ field: 'end_time', headerName: 'Hora fin', width: 100, headerAlign: 'center', align: 'center' },
-	{
-		field: 'stimated_time',
-		headerName: 'Duración',
-		width: 100,
-		headerAlign: 'center',
-		align: 'center'
-	},
-	{ field: 'company', headerName: 'Empresa', width: 140, headerAlign: 'center', align: 'center' },
-	{ field: 'plates', headerName: 'Placas' },
 	{
 		field: 'flat_type',
 		headerName: 'Tipo de plana',
 		align: 'center',
 		width: 150,
 		headerAlign: 'center',
-		renderCell: (params) => {
-			let color: { [key: string]: any } = {
-				full: deepPurple.A200,
-				simple: pink.A200
-			}
-
+		renderCell: ({ value }) => {
 			return (
 				<Chip
-					size="small"
-					label={params.value === 'full' ? 'Full' : 'Sencillo'}
-					variant="outlined"
-					sx={{
-						borderColor: color[params.value as string] || 'gray',
-						color: color[params.value as string] || 'gray'
-					}}
+					label={value === FLAT_TYPE.FULL ? 'Full' : 'Sencillo'}
+					color={value === FLAT_TYPE.FULL ? 'lime' : 'amber'}
 				/>
 			)
+		}
+	},
+	{
+		field: 'date',
+		headerName: 'Fecha',
+		width: 120,
+		headerAlign: 'center',
+		align: 'center',
+		renderCell: ({ row }: any) => {
+			return row?.date || '- - -'
+		}
+	},
+	{
+		field: 'start_time',
+		headerName: 'Hora inicio',
+		width: 120,
+		headerAlign: 'center',
+		align: 'center',
+		renderCell: ({ row }: any) => {
+			return row?.start_time || '- - -'
+		}
+	},
+	{
+		field: 'end_time',
+		headerName: 'Hora fin',
+		width: 120,
+		headerAlign: 'center',
+		align: 'center',
+		renderCell: ({ row }: any) => {
+			return row?.end_time || '- - -'
+		}
+	},
+	{
+		field: 'time_per_flat',
+		headerName: 'Tiempo por plana',
+		width: 150,
+		headerAlign: 'center',
+		align: 'center',
+		renderCell: ({ row }) => {
+			return `${row?.time_per_flat || 0} m`
 		}
 	},
 	{
@@ -64,93 +98,43 @@ const columns: GridColDef[] = [
 		align: 'center',
 		headerAlign: 'center',
 		renderCell: (params) => {
-			let text: { [key: string]: string } = {
-				CASH: 'Efectivo',
-				CARD: 'Tarjeta',
-				TRANSFER: 'Transferencia'
-			}
-
-			let color: { [key: string]: any } = {
-				CASH: green[600],
-				CARD: blueGrey[500],
-				TRANSFER: lightBlue[500]
-			}
 			return (
 				<Chip
-					size="small"
-					label={text[params.value as string] || 'No especificado'}
-					variant="outlined"
-					sx={{
-						borderColor: color[params.value as string] || 'gray',
-						color: color[params.value as string] || 'gray'
-					}}
+					label={PAYMENT_METHOD_TEXT[params.value as string] || 'No especificado'}
+					color={CHIP_COLOR_PM[params.value as string] || 'default'}
 				/>
 			)
 		}
 	}
 ]
 
-export default function EnlonadosDataGrid() {
+export default function EnlonadosDataGrid({ data = [] }: { data?: Enlonado[] }) {
 	const navigate = useNavigate()
 
-	const viewDetail = (row: any) => {
-		navigate(APP_ROUTES.APP.ENLONADOS.DETAIL.hash`${row.id}`)
+	const viewDetail = (row: Enlonado) => {
+		navigate(APP_ROUTES.APP.ENLONADOS.DETAIL.hash`${row.enlonado_id}`)
 	}
+
 	return (
 		<div style={{ width: '100%' }}>
-			<div style={{ height: 350, width: '100%' }}>
-				<DataGrid
-					columns={columns}
-					sx={{ borderColor: 'transparent' }}
-					onRowClick={(row) => {
-						viewDetail(row.row)
-					}}
-					rows={[
-						{
-							id: 1,
-							created_by: 'Juanito Pérez',
-							folio: '123',
-							date: '2022-04-17',
-							start_time: '15:30',
-							end_time: '17:30',
-							stimated_time: '2 hrs',
-							company: 'Empresa',
-							plates: 'ABC-123',
-							flat_type: 'full',
-							payment_method: 'CASH',
-							actions: 'Editar'
-						},
-						{
-							id: 2,
-							created_by: 'Juanito Pérez',
-							folio: '123',
-							date: '2022-04-17',
-							start_time: '15:30',
-							end_time: '17:30',
-							stimated_time: '2 hrs',
-							company: 'Empresa',
-							plates: 'ABC-123',
-							flat_type: 'full',
-							payment_method: 'CARD',
-							actions: 'Editar'
-						},
-						{
-							id: 3,
-							created_by: 'Juanito Pérez',
-							folio: '123',
-							date: '2022-04-17',
-							start_time: '15:30',
-							end_time: '17:30',
-							stimated_time: '2 hrs',
-							company: 'Empresa',
-							plates: 'ABC-123',
-							flat_type: 'simple',
-							payment_method: 'TRANSFER',
-							actions: 'Editar'
+			<DataGrid
+				columns={columns}
+				sx={{ borderColor: 'transparent' }}
+				onRowClick={(row) => {
+					viewDetail(row.row)
+				}}
+				getRowId={(row) => row.enlonado_id}
+				rows={data}
+				disableRowSelectionOnClick
+				rowCount={data?.length || 0}
+				initialState={{
+					pagination: {
+						paginationModel: {
+							pageSize: 10
 						}
-					]}
-				/>
-			</div>
+					}
+				}}
+			/>
 		</div>
 	)
 }

@@ -1,8 +1,11 @@
 import AppRouter from '@/routes/Router'
 import { ThemeProvider, createTheme } from '@mui/material'
-import { blue, green } from '@mui/material/colors'
+import { blue, cyan, green, orange } from '@mui/material/colors'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { ToastContainer } from 'react-toastify'
+
+import 'react-toastify/dist/ReactToastify.css'
 
 const theme = createTheme({
 	palette: {
@@ -10,7 +13,16 @@ const theme = createTheme({
 			main: blue.A400
 		},
 		secondary: {
+			main: '#fff'
+		},
+		warning: {
+			main: orange[500]
+		},
+		success: {
 			main: green[500]
+		},
+		info: {
+			main: cyan[500]
 		}
 	},
 	shape: {
@@ -45,6 +57,7 @@ function App() {
 	return (
 		<ThemeProvider theme={theme}>
 			<LocalizationProvider dateAdapter={AdapterDayjs}>
+				<ToastContainer position="top-center" theme="colored" />
 				<AppRouter />
 			</LocalizationProvider>
 		</ThemeProvider>

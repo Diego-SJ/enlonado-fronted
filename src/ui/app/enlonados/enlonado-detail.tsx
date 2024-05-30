@@ -1,10 +1,15 @@
-import { Box, Card, Chip, Divider, Grid, Tabs, Typography } from '@mui/material'
+import { Box, Card, Grid, Tabs } from '@mui/material'
 import Tab from '@mui/material/Tab'
 import { APP_ROUTES } from '@/routes/routes'
 import Breadcrumb from '../layout/breadcrumb'
-import { ReactNode, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import NoteAltOutlinedIcon from '@mui/icons-material/NoteAltOutlined'
-import { lightGreen, pink } from '@mui/material/colors'
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
+import { useParams } from 'react-router-dom'
+import { useAppDispatch } from '@/hooks/useStore'
+import { enlonadosActions } from '@/redux/reducers/enlonados'
+
+import EnlonadoInfoPanel from './detail-info'
 
 interface TabPanelProps {
 	children?: React.ReactNode
@@ -39,18 +44,18 @@ function a11yProps(index: number) {
 	}
 }
 
-const ItemDetail = ({ title = '', value = '' }: { title?: string; value?: string | ReactNode }) => {
-	return (
-		<Typography variant="body2">
-			<strong className="font-semibold">{title}</strong>
-			<br />
-			{typeof value === 'string' ? <span className="inline-flex"> {value}</span> : value}
-		</Typography>
-	)
-}
-
 const EnlonadosDetailPage = () => {
+	const { enlonado_id } = useParams()
+	const dispatch = useAppDispatch()
 	const [value, setValue] = useState(0)
+	const firstRender = useRef(false)
+
+	useEffect(() => {
+		if (!firstRender.current && !!enlonado_id) {
+			firstRender.current = true
+			dispatch(enlonadosActions.fetchEnlonadoById(enlonado_id))
+		}
+	}, [enlonado_id, dispatch])
 
 	const handleChange = (_: React.SyntheticEvent, newValue: number) => {
 		setValue(newValue)
@@ -74,85 +79,22 @@ const EnlonadosDetailPage = () => {
 							<Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
 								<Tab
 									label="Detalles"
-									icon={<NoteAltOutlinedIcon />}
+									icon={<InfoOutlinedIcon />}
 									iconPosition="start"
 									{...a11yProps(0)}
+									sx={{ minHeight: 'unset', paddingTop: '12px' }}
 								/>
-								{/* <Tab label="Item Two" {...a11yProps(1)} />
-								<Tab label="Item Three" {...a11yProps(2)} /> */}
+								<Tab
+									label="Editar"
+									icon={<NoteAltOutlinedIcon />}
+									iconPosition="start"
+									{...a11yProps(1)}
+									sx={{ minHeight: 'unset', paddingTop: '12px' }}
+								/>
 							</Tabs>
 						</Box>
 						<CustomTabPanel value={value} index={0}>
-							<Grid container spacing={2}>
-								<Grid item xs={12} md={4}>
-									<ItemDetail title="Encargado" value="Juanito Lopez" />
-								</Grid>
-								<Grid item xs={6} md={4}>
-									<ItemDetail title="Folio" value="ABC-1234" />
-								</Grid>
-								<Grid item xs={6} md={4}>
-									<ItemDetail title="Status" value="Pendiente" />
-								</Grid>
-								<Grid item xs={12} md={12}>
-									<ItemDetail title="Empresa" value="Empresa fake 001" />
-								</Grid>
-								<Divider />
-								<Grid item xs={6} sm={3} md={3}>
-									<ItemDetail title="Fecha" value="21 de mayo 2024" />
-								</Grid>
-								<Grid item xs={6} sm={3} md={3}>
-									<ItemDetail title="Hora inicio" value="14:30" />
-								</Grid>
-								<Grid item xs={6} sm={3} md={3}>
-									<ItemDetail title="Hora fin" value="14:50" />
-								</Grid>
-								<Grid item xs={6} sm={3} md={3}>
-									<ItemDetail title="Tiempo transcurrido" value="20 min." />
-								</Grid>
-
-								<Grid item xs={6} sm={3}>
-									<ItemDetail title="Placas" value="HAXQC" />
-								</Grid>
-								<Grid item xs={6} sm={3}>
-									<ItemDetail
-										title="Tipo de plana"
-										value={
-											<Chip
-												size="small"
-												label="Full"
-												sx={{ bgcolor: pink[600], color: 'white', paddingX: 1 }}
-											/>
-										}
-									/>
-								</Grid>
-								<Grid item xs={6} sm={3}>
-									<ItemDetail title="Plana 1" value="HAXQC" />
-								</Grid>
-								<Grid item xs={6} sm={3}>
-									<ItemDetail title="Plana 2" value="HAXQC" />
-								</Grid>
-
-								<Grid item xs={12}>
-									<ItemDetail
-										title="Forma de pago"
-										value={
-											<Chip
-												size="small"
-												label="Efectivo"
-												sx={{ bgcolor: lightGreen[600], color: 'white', paddingX: 1 }}
-											/>
-										}
-									/>
-								</Grid>
-								<Grid item xs={12}>
-									<ItemDetail
-										title="Observaciones"
-										value={
-											'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, vestibulum lectus sit amet, aliquam nunc. Nulla facilisi. Nullam nec nunc nec nunc aliquam.'
-										}
-									/>
-								</Grid>
-							</Grid>
+							<EnlonadoInfoPanel />
 						</CustomTabPanel>
 						<CustomTabPanel value={value} index={1}>
 							Item Two

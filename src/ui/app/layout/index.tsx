@@ -22,10 +22,14 @@ import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined'
 import GridViewOutlinedIcon from '@mui/icons-material/GridViewOutlined'
 import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined'
 import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined'
-import AvTimerOutlinedIcon from '@mui/icons-material/AvTimerOutlined'
 import PieChartOutlineOutlinedIcon from '@mui/icons-material/PieChartOutlineOutlined'
+import BusinessOutlinedIcon from '@mui/icons-material/BusinessOutlined'
 import { APP_ROUTES } from '@/routes/routes'
 import useMediaQuery from '@/hooks/useMediaQueries'
+import { Diversity1Outlined } from '@mui/icons-material'
+import { useAppDispatch, useAppSelector } from '@/hooks/useStore'
+import { userActions } from '@/redux/reducers/users'
+import { User } from '@/redux/reducers/users/types'
 
 const drawerWidth = 240
 
@@ -84,9 +88,17 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 
 export default function MainLayout() {
 	const theme = useTheme()
+	const dispatch = useAppDispatch()
+	const { is_admin } = useAppSelector((state) => state.users?.user_auth?.user as User)
 	const [open, setOpen] = React.useState(false)
-	const { isPhablet } = useMediaQuery()
+	const { isDesktop, isPhablet } = useMediaQuery()
 	const navigate = useNavigate()
+
+	React.useEffect(() => {
+		if (isDesktop) {
+			setOpen(true)
+		}
+	}, [isDesktop])
 
 	const handleDrawerOpen = () => {
 		setOpen(true)
@@ -103,7 +115,8 @@ export default function MainLayout() {
 		}
 	}
 
-	const signOut = () => {
+	const signOut = async () => {
+		await dispatch(userActions.signOut())
 		navigate(APP_ROUTES.AUTH.SIGN_IN.path)
 	}
 
@@ -167,26 +180,37 @@ export default function MainLayout() {
 						</ListItemButton>
 					</ListItem>
 
-					<ListItem disablePadding>
-						<ListItemButton onClick={() => changeRoute(APP_ROUTES.APP.USERS.path)}>
-							<ListItemIcon>{<PeopleAltOutlinedIcon />}</ListItemIcon>
-							<ListItemText primary="Colaboradores" />
-						</ListItemButton>
-					</ListItem>
+					{is_admin && (
+						<>
+							<ListItem disablePadding>
+								<ListItemButton onClick={() => changeRoute(APP_ROUTES.APP.USERS.path)}>
+									<ListItemIcon>{<PeopleAltOutlinedIcon />}</ListItemIcon>
+									<ListItemText primary="Colaboradores" />
+								</ListItemButton>
+							</ListItem>
 
-					<ListItem disablePadding>
-						<ListItemButton onClick={() => changeRoute(APP_ROUTES.APP.WORK_SHIFTS.path)}>
-							<ListItemIcon>{<AvTimerOutlinedIcon />}</ListItemIcon>
-							<ListItemText primary="Turnos" />
-						</ListItemButton>
-					</ListItem>
+							<ListItem disablePadding>
+								<ListItemButton onClick={() => changeRoute(APP_ROUTES.APP.COMPANIES.path)}>
+									<ListItemIcon>{<BusinessOutlinedIcon />}</ListItemIcon>
+									<ListItemText primary="Empresas" />
+								</ListItemButton>
+							</ListItem>
 
-					<ListItem disablePadding>
-						<ListItemButton onClick={() => changeRoute(APP_ROUTES.APP.REPORTS.path)}>
-							<ListItemIcon>{<PieChartOutlineOutlinedIcon />}</ListItemIcon>
-							<ListItemText primary="Reportes" />
-						</ListItemButton>
-					</ListItem>
+							<ListItem disablePadding>
+								<ListItemButton onClick={() => changeRoute(APP_ROUTES.APP.WORK_SHIFTS.path)}>
+									<ListItemIcon>{<Diversity1Outlined />}</ListItemIcon>
+									<ListItemText primary="Equipos" />
+								</ListItemButton>
+							</ListItem>
+
+							<ListItem disablePadding>
+								<ListItemButton onClick={() => changeRoute(APP_ROUTES.APP.REPORTS.path)}>
+									<ListItemIcon>{<PieChartOutlineOutlinedIcon />}</ListItemIcon>
+									<ListItemText primary="Reportes" />
+								</ListItemButton>
+							</ListItem>
+						</>
+					)}
 				</List>
 				<Divider />
 				<List>

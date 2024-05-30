@@ -1,21 +1,21 @@
 import { Card, Grid, TextField } from '@mui/material'
-import UsersDataGrid from './users-data-grid'
+import CompaniesDataGrid from './companies-data-grid'
 import { useNavigate } from 'react-router-dom'
 import { APP_ROUTES } from '@/routes/routes'
 import Breadcrumb from '../layout/breadcrumb'
 import { useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '@/hooks/useStore'
-import { userActions } from '@/redux/reducers/users'
-import { User } from '@/redux/reducers/users/types'
 
 import functions from '@/utils/functions'
 import { useDebounce } from '@uidotdev/usehooks'
+import { Company } from '@/redux/reducers/companies/types'
+import { companyActions } from '@/redux/reducers/companies'
 
-const UsersPage = () => {
+const CompaniesPage = () => {
 	const navigate = useNavigate()
 	const dispatch = useAppDispatch()
-	const { data } = useAppSelector((state) => state.users)
-	const [users, setUsers] = useState<User[]>([])
+	const { companies: data = [] } = useAppSelector((state) => state.companies)
+	const [companies, setCompanies] = useState<Company[]>([])
 	const [searchTerm, setSearchTerm] = useState('')
 	const firstRender = useRef(false)
 	const debouncedSearchTerm = useDebounce(searchTerm, 500)
@@ -23,40 +23,39 @@ const UsersPage = () => {
 	useEffect(() => {
 		if (!firstRender.current) {
 			firstRender.current = true
-			dispatch(userActions.fetchUsers())
+			dispatch(companyActions.fetchCompanies())
 		}
 	}, [dispatch, firstRender])
 
 	useEffect(() => {
 		if (data?.length > 0 && !!debouncedSearchTerm) {
-			const filteredUsers = data?.filter(
+			const filtered = data?.filter(
 				(user) =>
-					functions.includes(user.name + ' ' + user.surnames, debouncedSearchTerm) ||
-					functions.includes(user.username, debouncedSearchTerm) ||
-					functions.includes(user.phone, debouncedSearchTerm) ||
-					functions.includes(user.role, debouncedSearchTerm)
+					functions.includes(user.name, debouncedSearchTerm) ||
+					functions.includes(user.description, debouncedSearchTerm) ||
+					functions.includes(user.phone, debouncedSearchTerm)
 			)
-			setUsers(filteredUsers)
+			setCompanies(filtered)
 		} else {
-			setUsers(data || [])
+			setCompanies(data || [])
 		}
 	}, [data, debouncedSearchTerm])
 
-	const handleAddUser = () => {
-		navigate(APP_ROUTES.APP.USERS.ADD.path)
+	const handleAddItem = () => {
+		navigate(APP_ROUTES.APP.COMPANIES.ADD.path)
 	}
 
 	return (
 		<Grid container spacing={2}>
 			<Breadcrumb
-				title="Usuarios"
-				current="Usuarios"
+				title="Empresas"
+				current="Empresas"
 				links={[{ name: 'Inicio', path: APP_ROUTES.APP.DASHBOARD.path }]}
-				onAdd={handleAddUser}
+				onAdd={handleAddItem}
 			>
 				<Grid item xs={12} md={4}>
 					<TextField
-						label="Buscar por nombre, apellido..."
+						label="Buscar por nombre, teléfono, descripción"
 						fullWidth
 						size="small"
 						onChange={(event) => {
@@ -69,11 +68,11 @@ const UsersPage = () => {
 
 			<Grid item xs={12} sx={{ margin: '0 auto' }}>
 				<Card elevation={0}>
-					<UsersDataGrid data={users} />
+					<CompaniesDataGrid data={companies || []} />
 				</Card>
 			</Grid>
 		</Grid>
 	)
 }
 
-export default UsersPage
+export default CompaniesPage
