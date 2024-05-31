@@ -1,4 +1,5 @@
 import {
+	Avatar,
 	Button,
 	Card,
 	FormControl,
@@ -8,9 +9,7 @@ import {
 	IconButton,
 	InputAdornment,
 	InputLabel,
-	MenuItem,
 	OutlinedInput,
-	Select,
 	Switch,
 	TextField,
 	Typography
@@ -19,18 +18,19 @@ import { useForm, Controller } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import Breadcrumb from '../layout/breadcrumb'
 import { APP_ROUTES } from '@/routes/routes'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '@/hooks/useStore'
 import { userActions } from '@/redux/reducers/users'
-import { User, UserRoles } from '@/redux/reducers/users/types'
+import { ROLE_NAME, User, UserRoles } from '@/redux/reducers/users/types'
 import { useEffect, useState } from 'react'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 import functions from '@/utils/functions'
 import { useCopyToClipboard } from '@uidotdev/usehooks'
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined'
+import { blue } from '@mui/material/colors'
+import Chip from '@/ui/common/chip'
 
-const AddNewUser = () => {
-	const navigate = useNavigate()
+const EditProfilePage = () => {
 	const { user_id } = useParams()
 	const dispatch = useAppDispatch()
 	const { loading, data } = useAppSelector((state) => state.users)
@@ -64,11 +64,10 @@ const AddNewUser = () => {
 	}
 
 	const onSubmit = async (data: Partial<User>) => {
-		const result = await dispatch(userActions.createUser(data, user_id))
+		const result = await dispatch(userActions.updateUserProfile(data, user_id))
 
 		if (result) {
-			toast.success(`Usuario ${!!user_id ? 'actualizado' : 'creado'} con exito`)
-			navigate(APP_ROUTES.APP.USERS.path)
+			toast.success(`Perfil actualizado con exito`)
 		} else {
 			toast.error('Error al guardar información')
 		}
@@ -86,6 +85,7 @@ const AddNewUser = () => {
 			setValue('password', '')
 			setValue('username', '')
 			setShowPassword(false)
+			reset(currentUser)
 		}
 	}
 
@@ -97,16 +97,40 @@ const AddNewUser = () => {
 	return (
 		<Grid container spacing={2}>
 			<Breadcrumb
-				title={!!user_id ? 'Editar colaborador' : 'Nuevo colaborador'}
-				current={user_id ? 'Editar' : 'Nuevo'}
-				links={[{ name: 'Colaboradores', path: APP_ROUTES.APP.USERS.path }]}
+				title="Mi perfil"
+				current="Perfil"
+				links={[{ name: 'Inicio', path: APP_ROUTES.APP.DASHBOARD.path }]}
 			/>
+
+			<Grid item xs={12} lg={8} sx={{ margin: '0 auto' }}>
+				<Card elevation={0}>
+					<div className="flex justify-between px-4 pt-4 pb-6 md:px-8 md:py-10">
+						<div className="flex gap-4  my-auto">
+							<Avatar sx={{ width: 60, height: 60, background: blue.A400, fontSize: 30 }}>
+								{currentUser?.name?.charAt(0).toUpperCase() || 'U'}
+							</Avatar>
+							<div className="flex flex-col">
+								<Typography variant="h5" sx={{ marginTop: 0, marginBottom: 1, fontWeight: 500 }}>
+									{currentUser?.name} {currentUser?.surnames}
+								</Typography>
+								<Typography variant="body1" sx={{ color: 'text.secondary' }}>
+									{currentUser?.phone || 'Sin teléfono'}
+								</Typography>
+							</div>
+						</div>
+
+						<div className="h-full grid place-content-center my-auto">
+							<Chip color="default" label={ROLE_NAME[currentUser?.role as UserRoles]} />
+						</div>
+					</div>
+				</Card>
+			</Grid>
 
 			<Grid item xs={12} lg={8} sx={{ margin: '0 auto' }}>
 				<Card elevation={0}>
 					<div className="px-4 pt-4 pb-6 md:px-8 md:py-10">
 						<Typography variant="h6" sx={{ marginTop: 0 }}>
-							{!!user_id ? 'Editar colaborador' : 'Nuevo colaborador'}
+							Editar perfil
 						</Typography>
 						<form onSubmit={handleSubmit(onSubmit as any)}>
 							<Grid container spacing={2}>
@@ -169,35 +193,8 @@ const AddNewUser = () => {
 										)}
 									/>
 								</Grid>
-								<Grid item xs={12} md={6}>
-									<Controller
-										name="role"
-										rules={{ required: 'Campo obligatorio' }}
-										control={control}
-										render={({ field }) => (
-											<FormControl fullWidth sx={{ marginTop: '16px' }}>
-												<InputLabel id="role" sx={{ mt: '-7px' }} shrink={!!field?.value}>
-													Rol
-												</InputLabel>
-												<Select
-													{...field}
-													label="Rol"
-													value={field.value || ''}
-													labelId="role"
-													error={!!errors.role}
-													size="small"
-												>
-													<MenuItem value={UserRoles.ADMIN}>Administrador</MenuItem>
-													<MenuItem value={UserRoles.EMPLOYEE}>Colaborador</MenuItem>
-													<MenuItem value={UserRoles.SUPPORT}>Ayudante</MenuItem>
-												</Select>
-												{!!errors?.role && (
-													<FormHelperText error>{errors?.role?.message as string}</FormHelperText>
-												)}
-											</FormControl>
-										)}
-									/>
-								</Grid>
+
+								<Grid item xs={12} md={6}></Grid>
 
 								<Grid item xs={12} md={6}>
 									<Controller
@@ -300,4 +297,4 @@ const AddNewUser = () => {
 	)
 }
 
-export default AddNewUser
+export default EditProfilePage

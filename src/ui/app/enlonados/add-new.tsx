@@ -46,7 +46,7 @@ const AddNewEnlonado = () => {
 	const {
 		control,
 		handleSubmit,
-
+		setValue,
 		formState: { errors }
 	} = useForm({
 		defaultValues: {
@@ -72,11 +72,12 @@ const AddNewEnlonado = () => {
 			date: dayjs(data.date).format('YYYY-MM-DD')
 		}
 		let totalPlates = FlatValue[data?.flat_type || FLAT_TYPE.SIMPLE]
+		let time_per_flat =
+			functions.calculateMinutesBetweenTimes(times.start_time, times.end_time) / totalPlates
 		let payload: Partial<Enlonado> = {
 			...data,
 			...times,
-			time_per_flat:
-				functions.calculateMinutesBetweenTimes(times.start_time, times.end_time) / totalPlates
+			time_per_flat: Math.round(time_per_flat)
 		}
 
 		const result = await dispatch(enlonadosActions.createEnlonado(payload))
@@ -173,6 +174,7 @@ const AddNewEnlonado = () => {
 														InputLabelProps: { shrink: !!field?.value }
 													}
 												}}
+												closeOnSelect
 												value={field.value as any}
 												onChange={(date) => field.onChange(date)}
 												label="Fecha"
@@ -187,6 +189,8 @@ const AddNewEnlonado = () => {
 											control={control}
 											render={({ field }) => (
 												<MobileTimePicker
+													closeOnSelect
+													ampmInClock
 													slotProps={{
 														textField: {
 															size: 'small',
@@ -215,6 +219,8 @@ const AddNewEnlonado = () => {
 											control={control}
 											render={({ field }) => (
 												<MobileTimePicker
+													closeOnSelect
+													ampmInClock
 													slotProps={{
 														textField: {
 															size: 'small',
@@ -276,6 +282,7 @@ const AddNewEnlonado = () => {
 													onChange={(e) => {
 														setPlateType(e.target.value)
 														field.onChange(e)
+														setValue('flat_2', '')
 													}}
 												>
 													<FormControlLabel

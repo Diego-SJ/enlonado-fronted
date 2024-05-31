@@ -111,7 +111,7 @@ const EnlonadoInfoPanel = () => {
 					<ItemDetail loading={loading} title="Plana 1" value={enlonado?.flat_1 || '- - -'} />
 				</Grid>
 				<Grid item xs={6} sm={3}>
-					<ItemDetail loading={loading} title="Plana 2" value={enlonado?.flat_1 || '- - -'} />
+					<ItemDetail loading={loading} title="Plana 2" value={enlonado?.flat_2 || '- - -'} />
 				</Grid>
 				{!!enlonado?.team_members?.list?.length && (
 					<>

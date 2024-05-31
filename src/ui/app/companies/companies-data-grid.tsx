@@ -10,6 +10,7 @@ import DeleteDialog from '@/ui/common/delete-dialog'
 import { Company } from '@/redux/reducers/companies/types'
 import { companyActions } from '@/redux/reducers/companies'
 import BusinessOutlinedIcon from '@mui/icons-material/BusinessOutlined'
+import { CustomNoRowsOverlay } from '@/ui/common/data-grid-overlays'
 
 const columns: GridColDef<Company>[] = [
 	// { field: 'user_id', headerName: 'ID', width: 90, align: 'center', headerAlign: 'center' },
@@ -88,6 +89,10 @@ export default function CompaniesDataGrid({ data }: { data?: Company[] }) {
 								pageSize: 10
 							}
 						}
+					}}
+					slots={{
+						noRowsOverlay: CustomNoRowsOverlay,
+						noResultsOverlay: CustomNoRowsOverlay
 					}}
 				/>
 			</div>

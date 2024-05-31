@@ -57,7 +57,7 @@ function App() {
 	return (
 		<ThemeProvider theme={theme}>
 			<LocalizationProvider dateAdapter={AdapterDayjs}>
-				<ToastContainer position="top-center" theme="colored" />
+				<ToastContainer position="top-center" theme="dark" closeOnClick autoClose={2500} />
 				<AppRouter />
 			</LocalizationProvider>
 		</ThemeProvider>

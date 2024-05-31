@@ -1,4 +1,4 @@
-import { DataGrid, GridColDef } from '@mui/x-data-grid'
+import { DataGrid, GridColDef, GridPaginationModel } from '@mui/x-data-grid'
 
 import { useNavigate } from 'react-router-dom'
 import { APP_ROUTES } from '@/routes/routes'
@@ -9,6 +9,9 @@ import {
 	PAYMENT_METHOD_TEXT
 } from '@/redux/reducers/enlonados/types'
 import Chip from '@/ui/common/chip'
+import dayjs from 'dayjs'
+import { useAppSelector } from '@/hooks/useStore'
+import { CustomNoRowsOverlay } from '@/ui/common/data-grid-overlays'
 
 export const CHIP_COLOR_PM: { [key: string]: any } = {
 	[ENLONADO_PAYMENT_METHOD.CASH]: 'lime',
@@ -54,11 +57,11 @@ const columns: GridColDef<Enlonado>[] = [
 	{
 		field: 'date',
 		headerName: 'Fecha',
-		width: 120,
+		width: 170,
 		headerAlign: 'center',
 		align: 'center',
 		renderCell: ({ row }: any) => {
-			return row?.date || '- - -'
+			return row?.date ? dayjs(row?.date).format('D MMMM [de] YYYY') : '- - -'
 		}
 	},
 	{
@@ -108,16 +111,28 @@ const columns: GridColDef<Enlonado>[] = [
 	}
 ]
 
-export default function EnlonadosDataGrid({ data = [] }: { data?: Enlonado[] }) {
+type Props = {
+	data?: Enlonado[]
+	loading?: boolean
+	onPaginationChange?: (paginationModel: GridPaginationModel) => void
+}
+
+export default function EnlonadosDataGrid({
+	data = [],
+	loading = false,
+	onPaginationChange = () => {}
+}: Props) {
 	const navigate = useNavigate()
+	const { pagination } = useAppSelector((state) => state?.enlonados)
 
 	const viewDetail = (row: Enlonado) => {
 		navigate(APP_ROUTES.APP.ENLONADOS.DETAIL.hash`${row.enlonado_id}`)
 	}
 
 	return (
-		<div style={{ width: '100%' }}>
+		<div style={{ width: '100%', height: '500px' }}>
 			<DataGrid
+				loading={loading}
 				columns={columns}
 				sx={{ borderColor: 'transparent' }}
 				onRowClick={(row) => {
@@ -125,14 +140,24 @@ export default function EnlonadosDataGrid({ data = [] }: { data?: Enlonado[] }) 
 				}}
 				getRowId={(row) => row.enlonado_id}
 				rows={data}
+				onPaginationModelChange={(paginationModel) => {
+					onPaginationChange(paginationModel)
+				}}
+				paginationMode="server"
 				disableRowSelectionOnClick
-				rowCount={data?.length || 0}
-				initialState={{
-					pagination: {
-						paginationModel: {
-							pageSize: 10
-						}
-					}
+				rowCount={pagination?.total || 0}
+				paginationModel={{
+					pageSize: pagination?.pageSize || 20,
+					page: pagination?.page || 0
+				}}
+				disableColumnFilter
+				disableColumnSorting
+				disableColumnSelector
+				disableDensitySelector
+				disableColumnMenu
+				slots={{
+					noRowsOverlay: CustomNoRowsOverlay,
+					noResultsOverlay: CustomNoRowsOverlay
 				}}
 			/>
 		</div>

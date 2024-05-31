@@ -43,6 +43,9 @@ const customActions = {
 			}
 
 			dispatch(userActions.setUserAuth({ user: { ...users, is_admin: users?.role === 'ADMIN' } }))
+			await dispatch(companyActions.fetchCompanies())
+			await dispatch(userActions.fetchUsers())
+			await dispatch(userActions.fetchTeams())
 			dispatch(userActions.setIsLogged(true))
 			dispatch(userActions.setLoading(false))
 			return true
@@ -103,6 +106,31 @@ const customActions = {
 		dispatch(userActions.setLoading(false))
 		return true
 	},
+	updateUserProfile:
+		(data: Partial<User>, user_id?: string | null) => async (dispatch: AppDispatch) => {
+			dispatch(userActions.setLoading(true))
+			let error = null
+			let newUser = null
+			if (user_id) {
+				const { error: updateError, data: user } = await supabase
+					.from('users')
+					.update(data)
+					.eq('user_id', user_id)
+					.select()
+					.single()
+				error = updateError
+				newUser = user
+			}
+
+			if (error) {
+				dispatch(userActions.setLoading(false))
+				return false
+			}
+
+			dispatch(userActions.setUserAuth({ user: newUser as User }))
+			dispatch(userActions.setLoading(false))
+			return true
+		},
 	changeStatusUser: (user_id: string, status: boolean) => async (dispatch: AppDispatch) => {
 		dispatch(userActions.setLoading(true))
 

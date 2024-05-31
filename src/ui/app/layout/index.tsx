@@ -18,7 +18,7 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import { Outlet, useNavigate } from 'react-router-dom'
 import { Avatar } from '@mui/material'
-import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined'
+
 import GridViewOutlinedIcon from '@mui/icons-material/GridViewOutlined'
 import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined'
 import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined'
@@ -26,10 +26,11 @@ import PieChartOutlineOutlinedIcon from '@mui/icons-material/PieChartOutlineOutl
 import BusinessOutlinedIcon from '@mui/icons-material/BusinessOutlined'
 import { APP_ROUTES } from '@/routes/routes'
 import useMediaQuery from '@/hooks/useMediaQueries'
-import { Diversity1Outlined } from '@mui/icons-material'
+import { Diversity1Outlined, LogoutOutlined } from '@mui/icons-material'
 import { useAppDispatch, useAppSelector } from '@/hooks/useStore'
 import { userActions } from '@/redux/reducers/users'
 import { User } from '@/redux/reducers/users/types'
+import AccountMenu from './account-menu'
 
 const drawerWidth = 240
 
@@ -40,7 +41,7 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
 	backgroundColor: '#eef2f6',
 	height: '100vh',
 	overflowY: 'auto',
-	padding: theme.spacing(3),
+	padding: theme.spacing(2),
 	transition: theme.transitions.create('margin', {
 		easing: theme.transitions.easing.sharp,
 		duration: theme.transitions.duration.leavingScreen
@@ -91,14 +92,17 @@ export default function MainLayout() {
 	const dispatch = useAppDispatch()
 	const { is_admin } = useAppSelector((state) => state.users?.user_auth?.user as User)
 	const [open, setOpen] = React.useState(false)
-	const { isDesktop, isPhablet } = useMediaQuery()
+	const { isDesktop, isTablet } = useMediaQuery()
 	const navigate = useNavigate()
 
 	React.useEffect(() => {
 		if (isDesktop) {
 			setOpen(true)
 		}
-	}, [isDesktop])
+		if (isTablet) {
+			setOpen(false)
+		}
+	}, [isDesktop, isTablet])
 
 	const handleDrawerOpen = () => {
 		setOpen(true)
@@ -110,7 +114,7 @@ export default function MainLayout() {
 
 	const changeRoute = (route: string) => {
 		navigate(route)
-		if (isPhablet) {
+		if (isTablet) {
 			handleDrawerClose()
 		}
 	}
@@ -125,17 +129,24 @@ export default function MainLayout() {
 			<CssBaseline />
 			<AppBar position="fixed" open={open} elevation={0}>
 				<Toolbar>
-					<IconButton
-						aria-label="open drawer"
-						onClick={handleDrawerOpen}
-						edge="start"
-						sx={{ mr: 2, ...(open && { display: 'none' }) }}
-					>
-						<MenuIcon />
-					</IconButton>
-					<Typography variant="h6" noWrap component="div" color={'gray'}>
-						MCaxuxi
-					</Typography>
+					<div className="w-full flex items-center justify-between">
+						<div className="flex items-center ">
+							<IconButton
+								aria-label="open drawer"
+								onClick={handleDrawerOpen}
+								edge="start"
+								sx={{ mr: 2, ...(open && { display: 'none' }) }}
+							>
+								<MenuIcon />
+							</IconButton>
+							<Typography variant="h6" noWrap component="div" color={'gray'}>
+								MCaxuxi
+							</Typography>
+						</div>
+						<div className="grid place-content-center">
+							<AccountMenu />
+						</div>
+					</div>
 				</Toolbar>
 			</AppBar>
 			<Drawer
@@ -216,7 +227,7 @@ export default function MainLayout() {
 				<List>
 					<ListItem disablePadding>
 						<ListItemButton onClick={signOut}>
-							<ListItemIcon>{<ExitToAppOutlinedIcon />}</ListItemIcon>
+							<ListItemIcon>{<LogoutOutlined />}</ListItemIcon>
 							<ListItemText primary="Cerrar sesión" />
 						</ListItemButton>
 					</ListItem>

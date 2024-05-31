@@ -82,6 +82,34 @@ const functions = {
 
 		// Evaluar si la segunda hora es mayor que la primera
 		return totalMinutes2 > totalMinutes1
+	},
+	generateCrdentials: function generateUsername(firstName: string, lastName?: string) {
+		// Limpiar y preparar el nombre para el username
+		const cleanFirstName = firstName?.trim()?.toLowerCase() || 'usuario'
+
+		// Generar un sufijo alfanumérico de 4 dígitos
+		let suffix = ''
+		if (!!lastName && lastName?.trim() !== '') {
+			// Si hay apellido, usa los caracteres ASCII de los primeros cuatro caracteres para crear el sufijo
+			const cleanLastName = lastName.trim()
+			for (let i = 0; i < Math.min(3, cleanLastName.length); i++) {
+				const charCode = cleanLastName.charCodeAt(i)
+				suffix += charCode.toString(36).slice(-1) // Convertir el código ASCII a base 36 y tomar el último dígito
+			}
+			// Rellenar si el apellido es menor de 4 caracteres
+			while (suffix.length < 3) {
+				suffix += Math.floor(Math.random() * 10)
+			}
+		} else {
+			// Generar un sufijo completamente aleatorio si no hay apellido
+			for (let i = 0; i < 3; i++) {
+				suffix += Math.floor(Math.random() * 36).toString(36)
+			}
+		}
+
+		// Combinar nombre y sufijo para formar el username
+		const username = cleanFirstName + suffix
+		return username
 	}
 }
 

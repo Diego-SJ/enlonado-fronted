@@ -18,7 +18,7 @@ const AddNewCompany = () => {
 		control,
 		handleSubmit,
 		reset,
-		formState: { errors }
+		formState: { errors, isDirty }
 	} = useForm()
 
 	useEffect(() => {
@@ -53,7 +53,7 @@ const AddNewCompany = () => {
 				<Card elevation={0}>
 					<div className="px-4 pt-4 pb-6 md:px-8 md:py-10">
 						<Typography variant="h6" sx={{ marginTop: 0 }}>
-							{!!company_id ? 'Editar colaborador' : 'Nueva empresa'}
+							{!!company_id ? 'Editar empresa' : 'Nueva empresa'}
 						</Typography>
 						<form onSubmit={handleSubmit(onSubmit as any)}>
 							<Grid container spacing={2}>
@@ -127,7 +127,7 @@ const AddNewCompany = () => {
 								color="primary"
 								size="large"
 								sx={{ marginTop: 3 }}
-								disabled={loading}
+								disabled={loading || (!isDirty && !!company_id)}
 							>
 								{loading ? 'Cargando...' : !!company_id ? 'Guardar cambios' : 'Registrar'}
 							</Button>

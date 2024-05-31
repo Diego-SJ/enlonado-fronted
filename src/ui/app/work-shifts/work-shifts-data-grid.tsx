@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from '@/hooks/useStore'
 import { userActions } from '@/redux/reducers/users'
 import { toast } from 'react-toastify'
 import DeleteDialog from '@/ui/common/delete-dialog'
+import { CustomNoRowsOverlay } from '@/ui/common/data-grid-overlays'
 
 const columns: GridColDef<Team>[] = [
 	{
@@ -106,6 +107,10 @@ export default function EnlonadosDataGrid({ data }: { data?: Team[] }) {
 					rows={data || []}
 					getRowHeight={() => 'auto'}
 					disableRowSelectionOnClick
+					slots={{
+						noRowsOverlay: CustomNoRowsOverlay,
+						noResultsOverlay: CustomNoRowsOverlay
+					}}
 					initialState={{
 						pagination: {
 							paginationModel: {

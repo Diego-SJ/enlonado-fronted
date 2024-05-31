@@ -23,6 +23,12 @@ export enum UserRoles {
 	SUPPORT = 'SUPPORT'
 }
 
+export const ROLE_NAME = {
+	[UserRoles.ADMIN]: 'Administrador',
+	[UserRoles.EMPLOYEE]: 'Empleado',
+	[UserRoles.SUPPORT]: 'Soporte'
+}
+
 export type User = {
 	user_id: string
 	created_at: Date | string

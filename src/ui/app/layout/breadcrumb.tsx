@@ -8,10 +8,11 @@ type Props = {
 	current?: string
 	links?: { name: string; path: string }[]
 	onAdd?: () => void
+	topActions?: ReactNode
 	children?: ReactNode
 }
 
-const Breadcrumb = ({ title, current, links = [], onAdd, children }: Props) => {
+const Breadcrumb = ({ title, current, links = [], onAdd, children, topActions }: Props) => {
 	const navigate = useNavigate()
 
 	const handleClick = (path: string) => {
@@ -46,11 +47,12 @@ const Breadcrumb = ({ title, current, links = [], onAdd, children }: Props) => {
 					</div>
 
 					{onAdd && (
-						<div className="px-6 mb-4 md:px-0 md:mb-0">
+						<div className="pl-6 mb-4 md:px-0 md:mb-0 w-full md:w-auto">
 							<Button
 								variant="contained"
 								color="primary"
 								size="large"
+								fullWidth
 								sx={{ maxHeight: 40 }}
 								onClick={onAdd}
 								startIcon={<AddOutlinedIcon />}
@@ -59,6 +61,7 @@ const Breadcrumb = ({ title, current, links = [], onAdd, children }: Props) => {
 							</Button>
 						</div>
 					)}
+					{topActions && <div className="px-6 mb-4 md:px-0 md:mb-0">{topActions}</div>}
 				</div>
 				{children && (
 					<div className="px-6 pb-6">

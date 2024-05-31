@@ -32,7 +32,31 @@ function useQueryParams() {
 		[navigate, queryParams, location.pathname]
 	)
 
-	return { get: getQueryParam, remove: removeQueryParam }
+	const setQueryParam = useCallback(
+		(param: string, value: string) => {
+			if (!queryParams) return
+
+			queryParams.set(param, value)
+			// Actualizar la URL sin recargar la página
+			navigate(`${location.pathname}?${queryParams.toString()}`, { replace: true })
+		},
+		[navigate, queryParams, location.pathname]
+	)
+
+	const removeAllParams = useCallback(() => {
+		if (!queryParams) return
+
+		queryParams.forEach((_, key) => queryParams.delete(key))
+		navigate(`${location.pathname}`, { replace: true })
+	}, [navigate, queryParams, location.pathname])
+
+	return {
+		get: getQueryParam,
+		remove: removeQueryParam,
+		set: setQueryParam,
+		queryParams,
+		removeAll: removeAllParams
+	}
 }
 
 export default useQueryParams

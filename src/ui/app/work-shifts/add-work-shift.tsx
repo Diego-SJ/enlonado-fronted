@@ -60,7 +60,7 @@ const AddWorkShiftPage = () => {
 		control,
 		handleSubmit,
 		reset,
-		formState: { errors }
+		formState: { errors, isDirty }
 	} = useForm()
 
 	useEffect(() => {
@@ -249,7 +249,7 @@ const AddWorkShiftPage = () => {
 								color="primary"
 								size="large"
 								sx={{ marginTop: 3 }}
-								disabled={loading}
+								disabled={loading || !isDirty}
 							>
 								{loading ? 'Guardando...' : !!team_id ? 'Actualizar' : 'Guardar'}
 							</Button>

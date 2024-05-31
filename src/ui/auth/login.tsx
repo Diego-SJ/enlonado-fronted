@@ -23,6 +23,7 @@ const LoginPage = () => {
 
 		if (result) {
 			navigate(APP_ROUTES.APP.DASHBOARD.path)
+			toast.success('Bienvenido')
 		} else {
 			toast.error('Usuario o contraseña incorrectos')
 		}

@@ -50,6 +50,12 @@ export const APP_ROUTES = {
 			path: '/app/reportes',
 			title: 'Reportes',
 			ADD: { path: '/app/reportes/nuevo', title: 'Nuevo reporte' }
+		},
+		PROFILE: {
+			path: '/app/perfil/:user_id',
+			title: 'Perfil',
+			hash: (_: TemplateStringsArray, user_id: string) => `/app/perfil/${user_id}`,
+			EDIT: { path: '/app/perfil/editar', title: 'Editar perfil' }
 		}
 	}
 }

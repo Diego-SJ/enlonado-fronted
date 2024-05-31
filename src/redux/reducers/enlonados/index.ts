@@ -5,7 +5,12 @@ import customActions from './actions'
 const initialState: EnlonadosSlice = {
 	enlonados: [],
 	enlonado: {} as Enlonado,
-	loading: false
+	loading: false,
+	pagination: {
+		page: 1,
+		pageSize: 20,
+		total: 0
+	}
 }
 
 const enlonados = createSlice({
@@ -21,6 +26,9 @@ const enlonados = createSlice({
 		},
 		setEnlonado(state, action: PayloadAction<Enlonado>) {
 			state.enlonado = action.payload
+		},
+		setPagination(state, action: PayloadAction<{ page: number; pageSize: number; total: number }>) {
+			state.pagination = action.payload
 		}
 	}
 })

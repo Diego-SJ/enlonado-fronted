@@ -10,6 +10,7 @@ import { useAppDispatch } from '@/hooks/useStore'
 import { enlonadosActions } from '@/redux/reducers/enlonados'
 
 import EnlonadoInfoPanel from './detail-info'
+import EnlonadoEditPanel from './detail-edit'
 
 interface TabPanelProps {
 	children?: React.ReactNode
@@ -97,10 +98,7 @@ const EnlonadosDetailPage = () => {
 							<EnlonadoInfoPanel />
 						</CustomTabPanel>
 						<CustomTabPanel value={value} index={1}>
-							Item Two
-						</CustomTabPanel>
-						<CustomTabPanel value={value} index={2}>
-							Item Three
+							<EnlonadoEditPanel />
 						</CustomTabPanel>
 					</Box>
 				</Card>

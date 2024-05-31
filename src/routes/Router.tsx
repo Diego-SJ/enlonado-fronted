@@ -14,6 +14,7 @@ import AddWorkShiftPage from '@/ui/app/work-shifts/add-work-shift'
 import ReportsPage from '@/ui/app/reports'
 import CompaniesPage from '@/ui/app/companies'
 import AddNewCompany from '@/ui/app/companies/add-new-company'
+import EditProfilePage from '@/ui/app/users/edit-profile'
 
 const AppRouter = () => {
 	return (
@@ -45,6 +46,7 @@ const AppRouter = () => {
 				<Route path={APP_ROUTES.APP.USERS.path} element={<UsersPage />} />
 				<Route path={APP_ROUTES.APP.USERS.ADD.path} element={<AddNewUser />} />
 				<Route path={APP_ROUTES.APP.USERS.EDIT.path} element={<AddNewUser />} />
+				<Route path={APP_ROUTES.APP.PROFILE.path} element={<EditProfilePage />} />
 
 				{/* Companies */}
 				<Route path={APP_ROUTES.APP.COMPANIES.path} element={<CompaniesPage />} />

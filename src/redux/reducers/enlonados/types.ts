@@ -4,6 +4,11 @@ import { Team, TeamMembers, User } from '../users/types'
 
 export type EnlonadosSlice = {
 	enlonados: Enlonado[]
+	pagination: {
+		page: number
+		pageSize: number
+		total: number
+	}
 	enlonado: Enlonado
 	loading: boolean
 }
@@ -70,4 +75,17 @@ export type Enlonado = {
 
 	team_id?: string
 	teams?: Team
+}
+
+export type EnlonadosFilterOptions = {
+	manager_id?: string | null
+	start_date?: string | null
+	end_date?: string | null
+	flat_type?: string | null
+	payment_method?: string | null
+	company_id?: string | null
+	folio?: string | null
+	plate?: string | null
+	page?: number
+	pageSize?: number
 }

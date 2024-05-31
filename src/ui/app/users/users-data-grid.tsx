@@ -1,6 +1,6 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { Avatar, Button, Typography } from '@mui/material'
-import { User } from '@/redux/reducers/users/types'
+import { ROLE_NAME, User, UserRoles } from '@/redux/reducers/users/types'
 import { DeleteOutline, EditOutlined } from '@mui/icons-material'
 import { Link } from 'react-router-dom'
 import { APP_ROUTES } from '@/routes/routes'
@@ -9,6 +9,8 @@ import { toast } from 'react-toastify'
 import { useAppDispatch, useAppSelector } from '@/hooks/useStore'
 import { userActions } from '@/redux/reducers/users'
 import DeleteDialog from '@/ui/common/delete-dialog'
+import { CustomNoRowsOverlay } from '@/ui/common/data-grid-overlays'
+import Chip from '@/ui/common/chip'
 
 const columns: GridColDef<User>[] = [
 	// { field: 'user_id', headerName: 'ID', width: 90, align: 'center', headerAlign: 'center' },
@@ -27,7 +29,24 @@ const columns: GridColDef<User>[] = [
 	},
 	{ field: 'username', headerName: 'Usuario', width: 150 },
 	{ field: 'phone', headerName: 'Teléfono', width: 150 },
-	{ field: 'role', headerName: 'Rol', width: 150 },
+	{
+		field: 'role',
+		headerName: 'Rol',
+		width: 150,
+		align: 'center',
+		headerAlign: 'center',
+		renderCell: ({ row = {} }) => {
+			let color = {
+				[UserRoles.ADMIN]: 'sky',
+				[UserRoles.EMPLOYEE]: 'lime',
+				[UserRoles.SUPPORT]: 'amber'
+			}[row.role as UserRoles]
+
+			let rolename = ROLE_NAME[row.role as UserRoles]
+
+			return <Chip label={rolename} color={color as any} />
+		}
+	},
 	{
 		field: 'user_id',
 		headerName: 'Acciones',
@@ -82,6 +101,10 @@ export default function UsersDataGrid({ data }: { data?: User[] }) {
 					rows={data || []}
 					getRowId={(row) => row.user_id}
 					disableRowSelectionOnClick
+					slots={{
+						noRowsOverlay: CustomNoRowsOverlay,
+						noResultsOverlay: CustomNoRowsOverlay
+					}}
 					initialState={{
 						pagination: {
 							paginationModel: {
