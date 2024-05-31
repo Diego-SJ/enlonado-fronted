@@ -46,7 +46,7 @@ const AddNewCompany = () => {
 			<Breadcrumb
 				title={!!company_id ? 'Editar empresa' : 'Nueva empresa'}
 				current={company_id ? 'Editar' : 'Nueva'}
-				links={[{ name: 'Empresas', path: APP_ROUTES.APP.USERS.path }]}
+				links={[{ name: 'Empresas', path: APP_ROUTES.APP.COMPANIES.path }]}
 			/>
 
 			<Grid item xs={12} lg={8} sx={{ margin: '0 auto' }}>

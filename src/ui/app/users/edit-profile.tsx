@@ -104,22 +104,22 @@ const EditProfilePage = () => {
 
 			<Grid item xs={12} lg={8} sx={{ margin: '0 auto' }}>
 				<Card elevation={0}>
-					<div className="flex justify-between px-4 pt-4 pb-6 md:px-8 md:py-10">
-						<div className="flex gap-4  my-auto">
+					<div className="flex flex-col justify-between px-4 pt-4 pb-6 sm:flex-row md:px-8 md:py-10">
+						<div className="flex gap-4 my-auto items-center">
 							<Avatar sx={{ width: 60, height: 60, background: blue.A400, fontSize: 30 }}>
 								{currentUser?.name?.charAt(0).toUpperCase() || 'U'}
 							</Avatar>
 							<div className="flex flex-col">
-								<Typography variant="h5" sx={{ marginTop: 0, marginBottom: 1, fontWeight: 500 }}>
+								<h5 className="font-medium text-xl mb-2">
 									{currentUser?.name} {currentUser?.surnames}
-								</Typography>
+								</h5>
 								<Typography variant="body1" sx={{ color: 'text.secondary' }}>
 									{currentUser?.phone || 'Sin teléfono'}
 								</Typography>
 							</div>
 						</div>
 
-						<div className="h-full grid place-content-center my-auto">
+						<div className="h-full flex justify-center mt-6 my-auto sm:justify-end">
 							<Chip color="default" label={ROLE_NAME[currentUser?.role as UserRoles]} />
 						</div>
 					</div>
