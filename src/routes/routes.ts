@@ -49,7 +49,11 @@ export const APP_ROUTES = {
 		REPORTS: {
 			path: '/app/reportes',
 			title: 'Reportes',
-			ADD: { path: '/app/reportes/nuevo', title: 'Nuevo reporte' }
+			ADD: { path: '/app/reportes/nuevo', title: 'Nuevo reporte' },
+			FLATS_BY_MANAGER: {
+				path: '/app/reportes/planas-por-encargado',
+				title: 'Planas por encargado'
+			}
 		},
 		PROFILE: {
 			path: '/app/perfil/:user_id',

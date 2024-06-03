@@ -3,6 +3,7 @@ import { enlonadosActions } from '.'
 import { supabase } from '@/services/supabase'
 import { Enlonado, EnlonadosFilterOptions } from './types'
 import { userActions } from '../users'
+import { enlonados } from '@/utils/enlonados'
 
 const customActions = {
 	fetchEnlonados:
@@ -49,6 +50,46 @@ const customActions = {
 				})
 			)
 			dispatch(enlonadosActions.setEnlonados(data))
+			dispatch(enlonadosActions.setLoading(false))
+			return true
+		},
+
+	fetchEnlonadosCSV:
+		(filters?: EnlonadosFilterOptions) => async (dispatch: AppDispatch, getState: AppState) => {
+			dispatch(enlonadosActions.setLoading(true))
+			const user = getState().users?.user_auth?.user
+			const limitRecords = getState().enlonados?.pagination?.total || 0
+
+			let query = supabase.from('enlonados').select('*, users(name), teams(name), companies(name)')
+
+			if (!user?.is_admin) {
+				query.eq('manager_id', user?.user_id)
+			}
+
+			if (filters) {
+				if (filters.manager_id) query = query.eq('manager_id', filters.manager_id)
+				if (filters.start_date) query = query.gte('date', filters.start_date)
+				if (filters.end_date) query = query.lte('date', filters.end_date)
+				if (filters.flat_type) query = query.eq('flat_type', filters.flat_type)
+				if (filters.payment_method) query = query.eq('payment_method', filters.payment_method)
+				if (filters.company_id) query = query.eq('company_id', filters.company_id)
+				if (filters.folio) query = query.ilike('folio', `%${filters.folio}%`)
+				if (filters.plate) query = query.ilike('plate', `%${filters.plate}%`)
+			}
+
+			let offset = 0
+			let limit = limitRecords
+
+			const { data, error } = await query
+				.order('created_at', { ascending: false })
+				.range(offset, limit)
+
+			if (error) {
+				dispatch(enlonadosActions.setLoading(false))
+				return false
+			}
+
+			await enlonados.downloadCsv(data!)
 			dispatch(enlonadosActions.setLoading(false))
 			return true
 		},

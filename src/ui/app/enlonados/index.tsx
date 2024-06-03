@@ -7,7 +7,8 @@ import {
 	MenuItem,
 	Select,
 	SelectChangeEvent,
-	TextField
+	TextField,
+	Tooltip
 } from '@mui/material'
 import EnlonadosDataGrid from './enlonados-data-grid'
 import { APP_ROUTES } from '@/routes/routes'
@@ -47,6 +48,8 @@ const initialFormData: FormDataProps = {
 	folio: '',
 	plate: ''
 }
+
+const MAX_RECORDS = 1000
 
 const EnlonadosPage = () => {
 	const dispatch = useAppDispatch()
@@ -125,6 +128,21 @@ const EnlonadosPage = () => {
 			page: pagination?.page
 		}
 		dispatch(enlonadosActions.fetchEnlonados(filter))
+	}
+
+	const onDownload = async (pagination?: GridPaginationModel) => {
+		let filter: EnlonadosFilterOptions = {
+			manager_id: formData.manager_id || null,
+			start_date: formData.start_date?.format('YYYY-MM-DD') || null,
+			end_date: formData.end_date?.format('YYYY-MM-DD') || null,
+			flat_type: formData.flat_type || null,
+			payment_method: formData.payment_method || null,
+			company_id: formData.company_id || null,
+			folio: formData.folio || null,
+			plate: formData.plate || null,
+			page: pagination?.page
+		}
+		await dispatch(enlonadosActions.fetchEnlonadosCSV(filter))
 	}
 
 	return (
@@ -256,7 +274,7 @@ const EnlonadosPage = () => {
 						onChange={handleChange}
 					/>
 				</Grid>
-				<Grid item xs={12} sm={12} md={12} lg={4}>
+				<Grid item xs={12} sm={12} md={12} lg={6}>
 					<FormControl fullWidth>
 						<InputLabel> </InputLabel>
 						<div className="flex gap-4 justify-end w-full flex-row-reverse lg:flex-row">
@@ -279,6 +297,19 @@ const EnlonadosPage = () => {
 							>
 								<FilterAltOffOutlinedIcon />
 							</Button>
+
+							<Tooltip title={`Puedes descargar máximo ${MAX_RECORDS} registros`}>
+								<Button
+									onClick={() => onDownload()}
+									fullWidth
+									variant="contained"
+									color="success"
+									sx={{ color: 'white' }}
+									disabled={loading || !enlonados.length || enlonados?.length > MAX_RECORDS}
+								>
+									{loading ? 'Cargando...' : 'Descargar CSV'}
+								</Button>
+							</Tooltip>
 						</div>
 					</FormControl>
 				</Grid>

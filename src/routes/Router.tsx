@@ -15,6 +15,7 @@ import ReportsPage from '@/ui/app/reports'
 import CompaniesPage from '@/ui/app/companies'
 import AddNewCompany from '@/ui/app/companies/add-new-company'
 import EditProfilePage from '@/ui/app/users/edit-profile'
+import FlatsByManagersReport from '@/ui/app/reports/flats-by-managers'
 
 const AppRouter = () => {
 	return (
@@ -60,6 +61,10 @@ const AppRouter = () => {
 
 				{/* Reports */}
 				<Route path={APP_ROUTES.APP.REPORTS.path} element={<ReportsPage />} />
+				<Route
+					path={APP_ROUTES.APP.REPORTS.FLATS_BY_MANAGER.path}
+					element={<FlatsByManagersReport />}
+				/>
 
 				<Route path="*" element={<Navigate to={APP_ROUTES.APP.DASHBOARD.path} replace />} />
 			</Route>

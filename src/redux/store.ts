@@ -4,11 +4,13 @@ import storage from 'redux-persist/lib/storage'
 import usersReducer from './reducers/users'
 import companiesReducer from './reducers/companies'
 import enlonadosReducer from './reducers/enlonados'
+import reportsReducer from './reducers/reports'
 
 const rootReducer = combineReducers({
 	users: usersReducer,
 	companies: companiesReducer,
-	enlonados: enlonadosReducer
+	enlonados: enlonadosReducer,
+	reports: reportsReducer
 })
 
 const persistConfig = { key: 'enlonados.app', version: 1, storage }

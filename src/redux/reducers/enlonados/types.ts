@@ -38,6 +38,11 @@ export const FLAT_TYPE = {
 	FULL: 'FULL'
 }
 
+export const FLAT_TYPE_TEXT = {
+	[FLAT_TYPE.SIMPLE]: 'Sencilla',
+	[FLAT_TYPE.FULL]: 'Full'
+}
+
 export const FlatValue = {
 	[FLAT_TYPE.SIMPLE]: 1,
 	[FLAT_TYPE.FULL]: 2

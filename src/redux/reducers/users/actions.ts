@@ -5,6 +5,7 @@ import { SUPABASE_PASSWORD, SUPABASE_USERNAME } from '@/constants/credentials'
 import { Team, User } from './types'
 import { companyActions } from '../companies'
 import { enlonadosActions } from '../enlonados'
+import { reportsActions } from '../reports'
 
 const customActions = {
 	login:
@@ -56,6 +57,7 @@ const customActions = {
 		dispatch(userActions.resetSlice())
 		dispatch(companyActions.resetSlice())
 		dispatch(enlonadosActions.resetSlice())
+		dispatch(reportsActions.resetSlice())
 	},
 	fetchUsers: () => async (dispatch: AppDispatch) => {
 		dispatch(userActions.setLoading(true))
