@@ -24,7 +24,7 @@ const columns: GridColDef<Enlonado>[] = [
 	{
 		field: 'managers',
 		headerName: 'Encargado',
-		width: 250,
+		width: 200,
 		renderCell: ({ row }) => {
 			return row?.users?.name + ' ' + row?.users?.surnames
 		}
@@ -40,18 +40,13 @@ const columns: GridColDef<Enlonado>[] = [
 		}
 	},
 	{
-		field: 'flat_type',
-		headerName: 'Tipo de plana',
-		align: 'center',
-		width: 150,
+		field: 'companies',
+		headerName: 'Empresa',
+		width: 200,
 		headerAlign: 'center',
-		renderCell: ({ value }) => {
-			return (
-				<Chip
-					label={value === FLAT_TYPE.FULL ? 'Full' : 'Sencillo'}
-					color={value === FLAT_TYPE.FULL ? 'lime' : 'amber'}
-				/>
-			)
+		align: 'center',
+		renderCell: ({ row }) => {
+			return row.companies?.name || '- - -'
 		}
 	},
 	{
@@ -82,6 +77,22 @@ const columns: GridColDef<Enlonado>[] = [
 		align: 'center',
 		renderCell: ({ row }: any) => {
 			return row?.end_time || '- - -'
+		}
+	},
+
+	{
+		field: 'flat_type',
+		headerName: 'Tipo de plana',
+		align: 'center',
+		width: 150,
+		headerAlign: 'center',
+		renderCell: ({ value }) => {
+			return (
+				<Chip
+					label={value === FLAT_TYPE.FULL ? 'Full' : 'Sencillo'}
+					color={value === FLAT_TYPE.FULL ? 'lime' : 'amber'}
+				/>
+			)
 		}
 	},
 	{

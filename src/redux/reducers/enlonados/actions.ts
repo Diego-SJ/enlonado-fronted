@@ -11,7 +11,9 @@ const customActions = {
 			dispatch(enlonadosActions.setLoading(true))
 			const user = getState().users?.user_auth?.user
 
-			let query = supabase.from('enlonados').select('*, users(*)', { count: 'exact' })
+			let query = supabase
+				.from('enlonados')
+				.select('*, users(name,surnames), companies(name)', { count: 'exact' })
 
 			if (!user?.is_admin) {
 				query.eq('manager_id', user?.user_id)

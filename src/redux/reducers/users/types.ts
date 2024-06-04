@@ -25,8 +25,8 @@ export enum UserRoles {
 
 export const ROLE_NAME = {
 	[UserRoles.ADMIN]: 'Administrador',
-	[UserRoles.EMPLOYEE]: 'Empleado',
-	[UserRoles.SUPPORT]: 'Soporte'
+	[UserRoles.EMPLOYEE]: 'Colaborador',
+	[UserRoles.SUPPORT]: 'Ayudante'
 }
 
 export type User = {
