@@ -92,12 +92,14 @@ export default function AccountMenu() {
 				transformOrigin={{ horizontal: 'right', vertical: 'top' }}
 				anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
 			>
-				<MenuItem onClick={goToProfile}>
-					<ListItemIcon>
-						<Face6OutlinedIcon />
-					</ListItemIcon>
-					Perfil
-				</MenuItem>
+				{user?.is_admin && (
+					<MenuItem onClick={goToProfile}>
+						<ListItemIcon>
+							<Face6OutlinedIcon />
+						</ListItemIcon>
+						Perfil
+					</MenuItem>
+				)}
 				<Divider />
 				<MenuItem onClick={signOut}>
 					<ListItemIcon>

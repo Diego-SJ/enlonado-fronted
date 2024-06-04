@@ -26,7 +26,7 @@ const ReportsPage = () => {
 	}
 	return (
 		<Grid container spacing={2}>
-			<Grid item xs={12} md={4} lg={4}>
+			{/* <Grid item xs={12} md={4} lg={4}>
 				<Card elevation={2} sx={{ cursor: 'pointer' }}>
 					<div className="px-6 py-4 flex justify-between items-center">
 						<div>
@@ -60,9 +60,9 @@ const ReportsPage = () => {
 						</Avatar>
 					</div>
 				</Card>
-			</Grid>
+			</Grid> */}
 
-			<Grid item xs={12} md={4} lg={4}>
+			{/* <Grid item xs={12} md={4} lg={4}>
 				<Card elevation={2} sx={{ cursor: 'pointer' }}>
 					<div className="px-6 py-4 flex justify-between items-center">
 						<div>
@@ -78,7 +78,7 @@ const ReportsPage = () => {
 						</Avatar>
 					</div>
 				</Card>
-			</Grid>
+			</Grid> */}
 
 			<Grid item xs={12} md={6} lg={4}>
 				<Card elevation={2} sx={{ cursor: 'pointer' }}>
@@ -101,7 +101,7 @@ const ReportsPage = () => {
 				</Card>
 			</Grid>
 
-			<Grid item xs={12} md={6} lg={4}>
+			{/* <Grid item xs={12} md={6} lg={4}>
 				<Card elevation={2} sx={{ cursor: 'pointer' }}>
 					<CardContent>
 						<Typography variant="h6" mb={0}>
@@ -120,7 +120,7 @@ const ReportsPage = () => {
 						</Button>
 					</CardContent>
 				</Card>
-			</Grid>
+			</Grid> */}
 		</Grid>
 	)
 }

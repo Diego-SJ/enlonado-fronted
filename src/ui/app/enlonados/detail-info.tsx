@@ -88,7 +88,7 @@ const EnlonadoInfoPanel = () => {
 					<ItemDetail
 						loading={loading}
 						title="Tiempo por plana"
-						value={enlonado?.time_per_flat ? enlonado?.time_per_flat + ' m' : '- - -'}
+						value={dates.formatMinutes(enlonado?.time_per_flat)}
 					/>
 				</Grid>
 

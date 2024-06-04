@@ -3,6 +3,8 @@ import weekOfYear from 'dayjs/plugin/weekOfYear'
 import isoWeek from 'dayjs/plugin/isoWeek'
 import 'dayjs/locale/es' // Importar la localización en español
 import advancedFormat from 'dayjs/plugin/advancedFormat' // Esto no es estrictamente necesario pero es útil para formateo avanzado
+import duration from 'dayjs/plugin/duration'
+dayjs.extend(duration)
 
 dayjs.extend(advancedFormat) // Extender dayjs con el plugin avanzado
 dayjs.locale('es') // Usar localización en español
@@ -103,5 +105,22 @@ export const dates = {
 		}
 
 		return Array.from(weeks).sort((a, b) => a - b)
+	},
+	formatMinutes: (minutes?: number): string => {
+		if (!minutes) return '- - -'
+
+		if (minutes < 0) {
+			return 'El número de minutos debe ser positivo.'
+		}
+
+		const duration = dayjs.duration(minutes, 'minutes')
+		const hours = duration.hours()
+		const mins = duration.minutes()
+
+		if (hours > 0) {
+			return `${hours} h ${mins} min`
+		} else {
+			return `${mins} min`
+		}
 	}
 }

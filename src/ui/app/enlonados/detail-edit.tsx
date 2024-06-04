@@ -15,7 +15,7 @@ import {
 import { MobileDatePicker, MobileTimePicker } from '@mui/x-date-pickers'
 import dayjs from 'dayjs'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '@/hooks/useStore'
 import { Controller, useForm } from 'react-hook-form'
@@ -29,14 +29,20 @@ import {
 } from '@/redux/reducers/enlonados/types'
 import { toast } from 'react-toastify'
 import functions from '@/utils/functions'
+import { User } from '@/redux/reducers/users/types'
 
-const EnlonadoEditPanel = () => {
+type EnlonadoEditPanelProps = {
+	handleChange: (_: React.SyntheticEvent, newValue: number) => void
+}
+
+const EnlonadoEditPanel = ({ handleChange }: EnlonadoEditPanelProps) => {
 	const dispatch = useAppDispatch()
 	const { enlonado_id } = useParams()
 	const { companies } = useAppSelector((state) => state.companies)
+	const { is_admin = false } = useAppSelector((state) => state.users?.user_auth?.user as User)
 	const { loading, enlonado } = useAppSelector((state) => state.enlonados)
-	const [, setPlateType] = useState<EnlonadoFlatType>(FLAT_TYPE.SIMPLE)
-	const [times, setTimes] = useState<{ startTime: string | null; endTime: string | null }>({
+	const [plateType, setPlateType] = useState<EnlonadoFlatType | null>(null)
+	const [_, setTimes] = useState<{ startTime: string | null; endTime: string | null }>({
 		startTime: null,
 		endTime: null
 	})
@@ -44,69 +50,70 @@ const EnlonadoEditPanel = () => {
 		control,
 		handleSubmit,
 		reset,
-		formState: { errors }
+		setValue,
+		formState: { errors, isDirty }
 	} = useForm({
 		defaultValues: {
 			flat_type: FLAT_TYPE.SIMPLE
 		} as Partial<Enlonado>
 	})
 
+	const resetForm = useCallback(() => {
+		reset({
+			folio: enlonado.folio,
+			company_id: enlonado.company_id,
+			plate: enlonado.plate,
+			flat_type: enlonado.flat_type,
+			flat_1: enlonado.flat_1,
+			flat_2: enlonado.flat_2,
+			driver_name: enlonado.driver_name,
+			payment_method: enlonado.payment_method,
+			comments: enlonado.comments,
+			date: dayjs(enlonado.date),
+			start_time: dayjs(enlonado.date + ' ' + enlonado.start_time),
+			end_time: dayjs(enlonado.date + ' ' + enlonado.end_time)
+		})
+	}, [reset])
+
 	useEffect(() => {
 		if (!!enlonado?.enlonado_id) {
-			reset({
-				folio: enlonado.folio,
-				company_id: enlonado.company_id,
-				plate: enlonado.plate,
-				flat_type: enlonado.flat_type,
-				flat_1: enlonado.flat_1,
-				flat_2: enlonado.flat_2,
-				driver_name: enlonado.driver_name,
-				payment_method: enlonado.payment_method,
-				comments: enlonado.comments,
-				date: dayjs(enlonado.date),
-				start_time: dayjs(enlonado.date + ' ' + enlonado.start_time),
-				end_time: dayjs(enlonado.date + ' ' + enlonado.end_time)
-			})
+			resetForm()
 		}
-	}, [enlonado, reset])
-
-	const secondTimeError = useMemo(() => {
-		if ((!times.startTime || !times.endTime) && !errors?.start_time?.message) return null
-		if (!!errors?.start_time?.message) return errors?.start_time?.message
-
-		let isValid = functions.isValidSecondTime(times.startTime, times.endTime)
-
-		return !isValid ? 'La hora fin debe ser mayor a la hora inicio' : null
-	}, [errors?.start_time?.message, times])
+	}, [enlonado, resetForm])
 
 	const onSubmit = async (data: Partial<Enlonado>) => {
-		if (secondTimeError) return false
-
 		let times = {
 			start_time: dayjs(data.start_time).format('HH:mm'),
 			end_time: dayjs(data.end_time).format('HH:mm'),
 			date: dayjs(data.date).format('YYYY-MM-DD')
 		}
 		let totalPlates = FlatValue[data?.flat_type || FLAT_TYPE.SIMPLE]
+		let time_per_flat =
+			functions.calculateMinutesBetweenTimes(times.start_time, times.end_time) / totalPlates
 		let payload: Partial<Enlonado> = {
 			...data,
 			...times,
-			time_per_flat:
-				functions.calculateMinutesBetweenTimes(times.start_time, times.end_time) / totalPlates
+			time_per_flat: Math.round(time_per_flat)
 		}
 
 		const result = await dispatch(enlonadosActions.createEnlonado(payload, enlonado_id))
 
 		if (!!result) {
 			await toast.success(`Registro actualizado con exito`)
+			handleChange({} as any, 0)
 		} else {
 			toast.error('Error al guardar información')
 		}
 	}
 
+	const onCancel = () => {
+		resetForm()
+		handleChange({} as any, 0)
+	}
+
 	return (
 		<form onSubmit={handleSubmit(onSubmit as any)}>
-			<Grid container spacing={1}>
+			<Grid container spacing={2}>
 				<Grid item xs={12} md={6}>
 					<Controller
 						name="folio"
@@ -120,7 +127,7 @@ const EnlonadoEditPanel = () => {
 								margin="normal"
 								size="small"
 								fullWidth
-								disabled
+								disabled={!is_admin}
 								inputProps={{ style: { textTransform: 'uppercase' } }}
 								helperText={(errors?.folio?.message || null) as string}
 								error={!!errors.folio}
@@ -144,7 +151,7 @@ const EnlonadoEditPanel = () => {
 									value={field.value || enlonado?.company_id || ''}
 									label="Empresa"
 									labelId="company"
-									disabled
+									disabled={!is_admin}
 									error={!!errors.company_id}
 									size="small"
 								>
@@ -177,7 +184,7 @@ const EnlonadoEditPanel = () => {
 								margin="normal"
 								size="small"
 								fullWidth
-								disabled
+								disabled={!is_admin}
 								helperText={(errors?.plate?.message || '') as string}
 								error={!!errors.plate}
 								label="Placas"
@@ -193,7 +200,7 @@ const EnlonadoEditPanel = () => {
 						control={control}
 						rules={{ required: 'Campo obligatorio' }}
 						render={({ field }) => (
-							<FormControl disabled>
+							<FormControl disabled={!is_admin}>
 								<FormLabel id="demo-radio-buttons-group-label">Tipo de plana</FormLabel>
 								<RadioGroup
 									{...field}
@@ -202,6 +209,7 @@ const EnlonadoEditPanel = () => {
 									onChange={(e) => {
 										setPlateType(e.target.value)
 										field.onChange(e)
+										setValue('flat_2', '')
 									}}
 								>
 									<FormControlLabel value={FLAT_TYPE.SIMPLE} control={<Radio />} label="Sencillo" />
@@ -228,7 +236,7 @@ const EnlonadoEditPanel = () => {
 									margin="normal"
 									size="small"
 									fullWidth
-									disabled
+									disabled={!is_admin}
 									helperText={
 										(!!errors?.flat_1?.message ? errors?.flat_1?.message : null) as string
 									}
@@ -238,7 +246,7 @@ const EnlonadoEditPanel = () => {
 								/>
 							)}
 						/>
-						{enlonado?.flat_type === FLAT_TYPE.FULL && (
+						{enlonado?.flat_type === FLAT_TYPE.FULL && plateType !== FLAT_TYPE.SIMPLE && (
 							<Controller
 								name="flat_2"
 								control={control}
@@ -251,7 +259,7 @@ const EnlonadoEditPanel = () => {
 										margin="normal"
 										size="small"
 										fullWidth
-										disabled
+										disabled={!is_admin}
 										helperText={(errors?.flat_2?.message || '') as string}
 										error={!!errors.flat_2}
 										label="Plana 2"
@@ -274,7 +282,7 @@ const EnlonadoEditPanel = () => {
 								variant="outlined"
 								margin="normal"
 								size="small"
-								disabled
+								disabled={!is_admin}
 								fullWidth
 								helperText={(errors?.driver_name?.message || '') as string}
 								error={!!errors.driver_name}
@@ -301,7 +309,7 @@ const EnlonadoEditPanel = () => {
 										InputLabelProps: { shrink: !!field?.value }
 									}
 								}}
-								disabled={enlonado?.payment_method !== ENLONADO_PAYMENT_METHOD.PENDING}
+								disabled={!is_admin}
 								value={field.value as any}
 								onChange={(date) => field.onChange(date)}
 								label="Fecha"
@@ -326,7 +334,7 @@ const EnlonadoEditPanel = () => {
 											InputLabelProps: { shrink: !!field?.value }
 										}
 									}}
-									disabled={enlonado?.payment_method !== ENLONADO_PAYMENT_METHOD.PENDING}
+									disabled={!is_admin}
 									value={field.value as any}
 									onChange={(date) => {
 										setTimes((prev) => {
@@ -350,12 +358,12 @@ const EnlonadoEditPanel = () => {
 											size: 'small',
 											margin: 'normal',
 											fullWidth: true,
-											helperText: secondTimeError,
-											error: !!secondTimeError,
+											helperText: (errors?.end_time?.message || '') as string,
+											error: !!errors.end_time,
 											InputLabelProps: { shrink: !!field?.value }
 										}
 									}}
-									disabled={enlonado?.payment_method !== ENLONADO_PAYMENT_METHOD.PENDING}
+									disabled={!is_admin}
 									value={field.value as any}
 									onChange={(date) => {
 										setTimes((prev) => {
@@ -387,7 +395,7 @@ const EnlonadoEditPanel = () => {
 									label="Método de pago"
 									labelId="payment_method"
 									error={!!errors.payment_method}
-									disabled={enlonado?.payment_method !== ENLONADO_PAYMENT_METHOD.PENDING}
+									disabled={!is_admin}
 									size="small"
 								>
 									<MenuItem value={ENLONADO_PAYMENT_METHOD.CASH}>Efectivo</MenuItem>
@@ -425,19 +433,35 @@ const EnlonadoEditPanel = () => {
 						)}
 					/>
 				</Grid>
-			</Grid>
 
-			<Button
-				type="submit"
-				fullWidth
-				variant="contained"
-				color="primary"
-				size="large"
-				disabled={loading}
-				sx={{ marginTop: 1 }}
-			>
-				{loading ? 'Guardando...' : 'Guardar'}
-			</Button>
+				<Grid item xs={6}>
+					<Button
+						fullWidth
+						variant="contained"
+						color="secondary"
+						size="large"
+						disabled={loading || !isDirty}
+						sx={{ marginTop: 1 }}
+						onClick={onCancel}
+					>
+						Cancelar
+					</Button>
+				</Grid>
+
+				<Grid item xs={6}>
+					<Button
+						type="submit"
+						fullWidth
+						variant="contained"
+						color="primary"
+						size="large"
+						disabled={loading || !isDirty}
+						sx={{ marginTop: 1 }}
+					>
+						{loading ? 'Guardando...' : 'Guardar'}
+					</Button>
+				</Grid>
+			</Grid>
 		</form>
 	)
 }

@@ -98,7 +98,7 @@ const EnlonadosDetailPage = () => {
 							<EnlonadoInfoPanel />
 						</CustomTabPanel>
 						<CustomTabPanel value={value} index={1}>
-							<EnlonadoEditPanel />
+							<EnlonadoEditPanel handleChange={handleChange} />
 						</CustomTabPanel>
 					</Box>
 				</Card>

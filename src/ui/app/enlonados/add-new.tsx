@@ -17,7 +17,7 @@ import { MobileDatePicker, MobileTimePicker } from '@mui/x-date-pickers'
 import dayjs from 'dayjs'
 import Breadcrumb from '../layout/breadcrumb'
 import { APP_ROUTES } from '@/routes/routes'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '@/hooks/useStore'
 import { Controller, useForm } from 'react-hook-form'
@@ -39,7 +39,7 @@ const AddNewEnlonado = () => {
 	const { companies } = useAppSelector((state) => state.companies)
 	const { loading } = useAppSelector((state) => state.enlonados)
 	const [plateType, setPlateType] = useState<EnlonadoFlatType>(FLAT_TYPE.SIMPLE)
-	const [times, setTimes] = useState<{ startTime: string | null; endTime: string | null }>({
+	const [_, setTimes] = useState<{ startTime: string | null; endTime: string | null }>({
 		startTime: null,
 		endTime: null
 	})
@@ -54,18 +54,16 @@ const AddNewEnlonado = () => {
 		} as Partial<Enlonado>
 	})
 
-	const secondTimeError = useMemo(() => {
-		if ((!times.startTime || !times.endTime) && !errors?.start_time?.message) return null
-		if (!!errors?.start_time?.message) return errors?.start_time?.message
+	// const secondTimeError = useMemo(() => {
+	// 	if ((!times.startTime || !times.endTime) && !errors?.start_time?.message) return null
+	// 	if (!!errors?.start_time?.message) return errors?.start_time?.message
 
-		let isValid = functions.isValidSecondTime(times.startTime, times.endTime)
+	// 	let isValid = functions.isValidSecondTime(times.startTime, times.endTime)
 
-		return !isValid ? 'La hora fin debe ser mayor a la hora inicio' : null
-	}, [errors?.start_time?.message, times])
+	// 	return !isValid ? 'La hora fin debe ser mayor a la hora inicio' : null
+	// }, [errors?.start_time?.message, times])
 
 	const onSubmit = async (data: Partial<Enlonado>) => {
-		if (secondTimeError) return false
-
 		let times = {
 			start_time: dayjs(data.start_time).format('HH:mm'),
 			end_time: dayjs(data.end_time).format('HH:mm'),
@@ -226,8 +224,8 @@ const AddNewEnlonado = () => {
 															size: 'small',
 															margin: 'normal',
 															fullWidth: true,
-															helperText: secondTimeError,
-															error: !!secondTimeError,
+															helperText: (errors?.end_time?.message || '') as string,
+															error: !!errors.end_time,
 															InputLabelProps: { shrink: !!field?.value }
 														}
 													}}
