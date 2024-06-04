@@ -1,17 +1,14 @@
-import { Avatar, Button, Card, CardContent, Grid, Typography } from '@mui/material'
-import PostAddOutlinedIcon from '@mui/icons-material/PostAddOutlined'
+import { Button, Card, CardContent, Grid, Typography } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { APP_ROUTES } from '@/routes/routes'
-import { blue, green, orange } from '@mui/material/colors'
-import { useAppDispatch, useAppSelector } from '@/hooks/useStore'
+import { useAppDispatch } from '@/hooks/useStore'
 import { useEffect, useRef } from 'react'
 import { reportsActions } from '@/redux/reducers/reports'
 
 const ReportsPage = () => {
 	const navigate = useNavigate()
 	const dispatch = useAppDispatch()
-	const { flats_per_manager } = useAppSelector((state) => state.reports)
-	const totals = flats_per_manager?.enlonados
+	// const { flats_per_manager } = useAppSelector((state) => state.reports)
 	const onMounted = useRef(false)
 
 	useEffect(() => {

@@ -61,6 +61,59 @@ const functions = {
 		}
 
 		return minutesDifference
+	},
+	isValidSecondTime(time1?: string | null, time2?: string | null): boolean {
+		// Validar si cualquiera de los tiempos es null, undefined o vacío
+		if (!time1 || !time2) {
+			console.error('Alguno de los tiempos es null, undefined o vacío.')
+			return false
+		}
+
+		// Validar el formato 'hh:mm'
+		const timeRegex = /^([01]?[0-9]|2[0-3]):([0-5][0-9])$/
+		if (!timeRegex.test(time1) || !timeRegex.test(time2)) {
+			console.error('Formato de tiempo incorrecto. Asegúrate de usar el formato hh:mm.')
+			return false
+		}
+
+		// Descomponer las horas y minutos de cada tiempo
+		const [hours1, minutes1] = time1.split(':').map(Number)
+		const [hours2, minutes2] = time2.split(':').map(Number)
+
+		// Convertir las horas y minutos a minutos totales desde la medianoche
+		const totalMinutes1 = hours1 * 60 + minutes1
+		const totalMinutes2 = hours2 * 60 + minutes2
+
+		// Evaluar si la segunda hora es mayor que la primera
+		return totalMinutes2 > totalMinutes1
+	},
+	generateCrdentials: function generateUsername(firstName: string, lastName?: string) {
+		// Limpiar y preparar el nombre para el username
+		const cleanFirstName = firstName?.trim()?.toLowerCase() || 'usuario'
+
+		// Generar un sufijo alfanumérico de 4 dígitos
+		let suffix = ''
+		if (!!lastName && lastName?.trim() !== '') {
+			// Si hay apellido, usa los caracteres ASCII de los primeros cuatro caracteres para crear el sufijo
+			const cleanLastName = lastName.trim()
+			for (let i = 0; i < Math.min(3, cleanLastName.length); i++) {
+				const charCode = cleanLastName.charCodeAt(i)
+				suffix += charCode.toString(36).slice(-1) // Convertir el código ASCII a base 36 y tomar el último dígito
+			}
+			// Rellenar si el apellido es menor de 4 caracteres
+			while (suffix.length < 3) {
+				suffix += Math.floor(Math.random() * 10)
+			}
+		} else {
+			// Generar un sufijo completamente aleatorio si no hay apellido
+			for (let i = 0; i < 3; i++) {
+				suffix += Math.floor(Math.random() * 36).toString(36)
+			}
+		}
+
+		// Combinar nombre y sufijo para formar el username
+		const username = cleanFirstName + suffix
+		return username
 	}
 }
 
