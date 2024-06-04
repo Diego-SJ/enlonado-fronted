@@ -75,27 +75,25 @@ export default function CompaniesDataGrid({ data }: { data?: Company[] }) {
 	}
 
 	return (
-		<div style={{ width: '100%' }}>
-			<div style={{ width: '100%' }}>
-				<DataGrid
-					columns={columns}
-					sx={{ borderColor: 'transparent' }}
-					rows={data || []}
-					getRowId={(row) => row.company_id}
-					disableRowSelectionOnClick
-					initialState={{
-						pagination: {
-							paginationModel: {
-								pageSize: 10
-							}
+		<div style={{ width: '100%', height: data?.length ? '' : '500px' }}>
+			<DataGrid
+				columns={columns}
+				sx={{ borderColor: 'transparent' }}
+				rows={data || []}
+				getRowId={(row) => row.company_id}
+				disableRowSelectionOnClick
+				initialState={{
+					pagination: {
+						paginationModel: {
+							pageSize: 10
 						}
-					}}
-					slots={{
-						noRowsOverlay: CustomNoRowsOverlay,
-						noResultsOverlay: CustomNoRowsOverlay
-					}}
-				/>
-			</div>
+					}
+				}}
+				slots={{
+					noRowsOverlay: CustomNoRowsOverlay,
+					noResultsOverlay: CustomNoRowsOverlay
+				}}
+			/>
 
 			<DeleteDialog onClose={onClose} open={!!company_id} onConfirm={onDelete} loading={loading} />
 		</div>

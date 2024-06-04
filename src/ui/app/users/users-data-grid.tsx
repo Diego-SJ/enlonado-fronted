@@ -93,27 +93,25 @@ export default function UsersDataGrid({ data }: { data?: User[] }) {
 	}
 
 	return (
-		<div style={{ width: '100%' }}>
-			<div style={{ width: '100%' }}>
-				<DataGrid
-					columns={columns}
-					sx={{ borderColor: 'transparent' }}
-					rows={data || []}
-					getRowId={(row) => row.user_id}
-					disableRowSelectionOnClick
-					slots={{
-						noRowsOverlay: CustomNoRowsOverlay,
-						noResultsOverlay: CustomNoRowsOverlay
-					}}
-					initialState={{
-						pagination: {
-							paginationModel: {
-								pageSize: 10
-							}
+		<div style={{ width: '100%', height: data?.length ? '' : '500px' }}>
+			<DataGrid
+				columns={columns}
+				sx={{ borderColor: 'transparent' }}
+				rows={data || []}
+				getRowId={(row) => row.user_id}
+				disableRowSelectionOnClick
+				slots={{
+					noRowsOverlay: CustomNoRowsOverlay,
+					noResultsOverlay: CustomNoRowsOverlay
+				}}
+				initialState={{
+					pagination: {
+						paginationModel: {
+							pageSize: 10
 						}
-					}}
-				/>
-			</div>
+					}
+				}}
+			/>
 
 			<DeleteDialog onClose={onClose} open={!!user_id} onConfirm={onDelete} loading={loading} />
 		</div>

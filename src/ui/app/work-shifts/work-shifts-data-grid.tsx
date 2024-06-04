@@ -98,28 +98,26 @@ export default function EnlonadosDataGrid({ data }: { data?: Team[] }) {
 	}
 
 	return (
-		<div style={{ width: '100%' }}>
-			<div style={{ width: '100%' }}>
-				<DataGrid
-					columns={columns}
-					sx={{ borderColor: 'transparent' }}
-					getRowId={(row) => row.team_id}
-					rows={data || []}
-					getRowHeight={() => 'auto'}
-					disableRowSelectionOnClick
-					slots={{
-						noRowsOverlay: CustomNoRowsOverlay,
-						noResultsOverlay: CustomNoRowsOverlay
-					}}
-					initialState={{
-						pagination: {
-							paginationModel: {
-								pageSize: 10
-							}
+		<div style={{ width: '100%', height: data?.length ? '' : '500px' }}>
+			<DataGrid
+				columns={columns}
+				sx={{ borderColor: 'transparent' }}
+				getRowId={(row) => row.team_id}
+				rows={data || []}
+				getRowHeight={() => 'auto'}
+				disableRowSelectionOnClick
+				slots={{
+					noRowsOverlay: CustomNoRowsOverlay,
+					noResultsOverlay: CustomNoRowsOverlay
+				}}
+				initialState={{
+					pagination: {
+						paginationModel: {
+							pageSize: 10
 						}
-					}}
-				/>
-			</div>
+					}
+				}}
+			/>
 
 			<DeleteDialog onClose={onClose} open={!!team_id} onConfirm={onDelete} loading={loading} />
 		</div>

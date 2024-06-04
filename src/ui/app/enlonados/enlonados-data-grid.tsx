@@ -130,7 +130,7 @@ export default function EnlonadosDataGrid({
 	}
 
 	return (
-		<div style={{ width: '100%', height: '500px' }}>
+		<div style={{ width: '100%', height: data?.length ? '' : '500px' }}>
 			<DataGrid
 				loading={loading}
 				columns={columns}

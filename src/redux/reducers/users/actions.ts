@@ -32,15 +32,9 @@ const customActions = {
 			let {
 				data: [users],
 				error: userError
-			} = await supabase
-				.from('users')
-				.select('*')
+			} = await supabase.from('users').select('*').eq('username', username).eq('password', password)
 
-				// Filters
-				.eq('username', username)
-				.eq('password', password)
-
-			if (userError) {
+			if (userError || !users) {
 				dispatch(userActions.setLoading(false))
 				return false
 			}
