@@ -21,6 +21,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 import dayjs, { Dayjs } from 'dayjs'
 import 'dayjs/locale/es'
+import { toast } from 'react-toastify'
 
 type Props = {
 	downloadPDF: () => void
@@ -50,6 +51,11 @@ const FlatsByManagerFilters = ({ downloadPDF }: Props) => {
 	}
 
 	const handleToggle = (value: User) => () => {
+		if (userList.length > 5) {
+			toast.info('No puedes seleccionar más de 6 encargados')
+			return
+		}
+
 		const currentIndex = userList?.findIndex((user) => user?.user_id === value?.user_id)
 		const newChecked = [...userList]
 
