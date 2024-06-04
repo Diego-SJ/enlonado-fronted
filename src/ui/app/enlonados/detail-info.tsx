@@ -6,7 +6,7 @@ import { CHIP_COLOR_PM } from './enlonados-data-grid'
 import Chip from '@/ui/common/chip'
 import { dates } from '@/utils/dates'
 
-const ItemDetail = ({
+export const ItemDetail = ({
 	title = '',
 	value = '',
 	loading = false

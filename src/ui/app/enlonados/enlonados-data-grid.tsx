@@ -1,4 +1,4 @@
-import { DataGrid, GridColDef, GridPaginationModel } from '@mui/x-data-grid'
+import { DataGrid, GridColDef, GridPaginationModel, GridSortModel } from '@mui/x-data-grid'
 
 import { useNavigate } from 'react-router-dom'
 import { APP_ROUTES } from '@/routes/routes'
@@ -12,6 +12,7 @@ import Chip from '@/ui/common/chip'
 import dayjs from 'dayjs'
 import { useAppSelector } from '@/hooks/useStore'
 import { CustomNoRowsOverlay } from '@/ui/common/data-grid-overlays'
+import { useState } from 'react'
 
 export const CHIP_COLOR_PM: { [key: string]: any } = {
 	[ENLONADO_PAYMENT_METHOD.CASH]: 'lime',
@@ -22,7 +23,7 @@ export const CHIP_COLOR_PM: { [key: string]: any } = {
 
 const columns: GridColDef<Enlonado>[] = [
 	{
-		field: 'managers',
+		field: 'manager_id',
 		headerName: 'Encargado',
 		width: 200,
 		renderCell: ({ row }) => {
@@ -40,7 +41,7 @@ const columns: GridColDef<Enlonado>[] = [
 		}
 	},
 	{
-		field: 'companies',
+		field: 'company_id',
 		headerName: 'Empresa',
 		width: 200,
 		headerAlign: 'center',
@@ -125,7 +126,7 @@ const columns: GridColDef<Enlonado>[] = [
 type Props = {
 	data?: Enlonado[]
 	loading?: boolean
-	onPaginationChange?: (paginationModel: GridPaginationModel) => void
+	onPaginationChange?: (paginationModel: GridPaginationModel | GridSortModel) => void
 }
 
 export default function EnlonadosDataGrid({
@@ -135,6 +136,7 @@ export default function EnlonadosDataGrid({
 }: Props) {
 	const navigate = useNavigate()
 	const { pagination } = useAppSelector((state) => state?.enlonados)
+	const [sortModel, setSortModel] = useState<GridSortModel>([])
 
 	const viewDetail = (row: Enlonado) => {
 		navigate(APP_ROUTES.APP.ENLONADOS.DETAIL.hash`${row.enlonado_id}`)
@@ -161,8 +163,13 @@ export default function EnlonadosDataGrid({
 					pageSize: pagination?.pageSize || 20,
 					page: pagination?.page || 0
 				}}
+				sortModel={sortModel}
+				sortingMode="server"
+				onSortModelChange={(sortModel) => {
+					setSortModel(sortModel)
+					onPaginationChange(sortModel)
+				}}
 				disableColumnFilter
-				disableColumnSorting
 				disableColumnSelector
 				disableDensitySelector
 				disableColumnMenu

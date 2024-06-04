@@ -25,7 +25,7 @@ import {
 } from '@/redux/reducers/enlonados/types'
 import useQueryParams from '@/hooks/useQuery'
 import FilterAltOffOutlinedIcon from '@mui/icons-material/FilterAltOffOutlined'
-import { GridPaginationModel } from '@mui/x-data-grid'
+import { GridPaginationModel, GridSortModel } from '@mui/x-data-grid'
 
 type FormDataProps = {
 	manager_id?: string | null
@@ -115,7 +115,7 @@ const EnlonadosPage = () => {
 		dispatch(enlonadosActions.fetchEnlonados())
 	}
 
-	const onSearch = (pagination?: GridPaginationModel) => {
+	const onSearch = (pagination?: GridPaginationModel | GridSortModel) => {
 		let filter: EnlonadosFilterOptions = {
 			manager_id: formData.manager_id || null,
 			start_date: formData.start_date?.format('YYYY-MM-DD') || null,
@@ -125,7 +125,9 @@ const EnlonadosPage = () => {
 			company_id: formData.company_id || null,
 			folio: formData.folio || null,
 			plate: formData.plate || null,
-			page: pagination?.page
+			page: (pagination as GridPaginationModel)?.page,
+			field: (pagination as GridSortModel)[0]?.field || 'date',
+			sort: (pagination as GridSortModel)[0]?.sort || 'asc'
 		}
 		dispatch(enlonadosActions.fetchEnlonados(filter))
 	}

@@ -30,14 +30,20 @@ const customActions = {
 				if (filters.plate) query = query.ilike('plate', `%${filters.plate}%`)
 			}
 
+			if (filters?.sort && filters?.field) {
+				query.order(filters?.field, { ascending: filters?.sort === 'asc' })
+			} else {
+				query.order('date', { ascending: false })
+			}
+
+			console.log(filters)
+
 			const page = filters?.page || 0
 			const pageSize = 20
 			let offset = page * pageSize
 			let limit = (page + 1) * pageSize - 1
 
-			const { data, error, count } = await query
-				.order('created_at', { ascending: false })
-				.range(offset, limit)
+			const { data, error, count } = await query.range(offset, limit)
 
 			if (error) {
 				dispatch(enlonadosActions.setLoading(false))

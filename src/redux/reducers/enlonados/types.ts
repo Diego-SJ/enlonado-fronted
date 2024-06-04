@@ -93,4 +93,6 @@ export type EnlonadosFilterOptions = {
 	plate?: string | null
 	page?: number
 	pageSize?: number
+	field?: string
+	sort?: string
 }

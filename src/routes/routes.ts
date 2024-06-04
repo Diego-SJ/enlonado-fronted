@@ -40,6 +40,10 @@ export const APP_ROUTES = {
 			path: '/app/empresas',
 			title: 'Nuevo enlonado',
 			ADD: { path: '/app/empresas/nuevo', title: 'Nuevo usuario' },
+			DETAIL: {
+				path: '/app/empresas/:company_id',
+				hash: (_: TemplateStringsArray, company_id: string) => `/app/empresas/${company_id}`
+			},
 			EDIT: {
 				path: '/app/empresas/editar/:company_id',
 				title: 'Editar usuario',

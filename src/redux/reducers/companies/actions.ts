@@ -25,6 +25,9 @@ const customActions = {
 				name: data.name,
 				description: data.description,
 				phone: data.phone,
+				contact_info: data.contact_info || { emails: [], phones: [] },
+				payment_method: data.payment_method,
+				social_reason: data.social_reason,
 				is_active: data.is_active ?? true
 			}
 			if (company_id) {
@@ -60,6 +63,23 @@ const customActions = {
 		}
 
 		await dispatch(companyActions.fetchCompanies())
+		return true
+	},
+	fetchCompanyById: (company_id: string) => async (dispatch: AppDispatch) => {
+		dispatch(companyActions.setLoading(true))
+		const { data, error } = await supabase
+			.from('companies')
+			.select('*')
+			.eq('company_id', company_id)
+			.single()
+
+		if (error) {
+			dispatch(companyActions.setLoading(false))
+			return false
+		}
+
+		dispatch(companyActions.setCompany(data))
+		dispatch(companyActions.setLoading(false))
 		return true
 	}
 }

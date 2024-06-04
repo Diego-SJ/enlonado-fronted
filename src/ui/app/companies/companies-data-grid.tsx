@@ -1,6 +1,6 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { Avatar, Button, Typography } from '@mui/material'
-import { DeleteOutline, EditOutlined } from '@mui/icons-material'
+import { DeleteOutline, EditOutlined, RemoveRedEye } from '@mui/icons-material'
 import { Link } from 'react-router-dom'
 import { APP_ROUTES } from '@/routes/routes'
 import useQuery from '@/hooks/useQuery'
@@ -9,8 +9,10 @@ import { useAppDispatch, useAppSelector } from '@/hooks/useStore'
 import DeleteDialog from '@/ui/common/delete-dialog'
 import { Company } from '@/redux/reducers/companies/types'
 import { companyActions } from '@/redux/reducers/companies'
-import BusinessOutlinedIcon from '@mui/icons-material/BusinessOutlined'
+import { BusinessOutlined } from '@mui/icons-material'
 import { CustomNoRowsOverlay } from '@/ui/common/data-grid-overlays'
+import Chip from '@/ui/common/chip'
+import { ENLONADO_PAYMENT_METHOD } from '@/redux/reducers/enlonados/types'
 
 const columns: GridColDef<Company>[] = [
 	// { field: 'user_id', headerName: 'ID', width: 90, align: 'center', headerAlign: 'center' },
@@ -18,17 +20,41 @@ const columns: GridColDef<Company>[] = [
 		field: 'name',
 		headerName: 'Nombre',
 		width: 380,
-		renderCell: ({ row = {} }) => (
+		renderCell: ({ row }) => (
 			<div className="flex gap-2 items-center h-full">
 				<Avatar sx={{ width: 35, height: 35, fontSize: 14, padding: 1 }}>
-					<BusinessOutlinedIcon sx={{ width: 20, height: 20 }} />
+					<BusinessOutlined sx={{ width: 20, height: 20 }} />
 				</Avatar>{' '}
 				<Typography>{row?.name || '- - -'}</Typography>
 			</div>
 		)
 	},
-	{ field: 'phone', headerName: 'Teléfono', width: 150 },
-	{ field: 'description', headerName: 'Descripción', width: 250 },
+	{
+		field: 'social_reason',
+		headerName: 'Razón Social',
+		width: 380,
+		renderCell: ({ row }) => (
+			<div className="flex gap-2 items-center h-full">
+				<Typography>{row?.social_reason || '- - -'}</Typography>
+			</div>
+		)
+	},
+	{ field: 'phone', headerName: 'Teléfono principal', width: 150 },
+	{
+		field: 'payment_method',
+		headerName: 'Método de pago',
+		align: 'center',
+		width: 150,
+		headerAlign: 'center',
+		renderCell: ({ value }) => {
+			return (
+				<Chip
+					label={value === ENLONADO_PAYMENT_METHOD.CASH ? 'Efectivo' : 'Crédito'}
+					color={value === ENLONADO_PAYMENT_METHOD.CASH ? 'lime' : 'amber'}
+				/>
+			)
+		}
+	},
 	{
 		field: 'user_id',
 		headerName: 'Acciones',
@@ -37,6 +63,11 @@ const columns: GridColDef<Company>[] = [
 		align: 'center',
 		renderCell: ({ row = {} as Company }) => (
 			<div className="flex justify-center gap-3 items-center h-full">
+				<Link to={APP_ROUTES.APP.COMPANIES.DETAIL.hash`${row.company_id!}`}>
+					<Button variant="contained" color="success">
+						<RemoveRedEye sx={{ color: 'white' }} />
+					</Button>
+				</Link>
 				<Link to={APP_ROUTES.APP.COMPANIES.EDIT.hash`${row.company_id!}`}>
 					<Button variant="contained" color="warning">
 						<EditOutlined sx={{ color: 'white' }} />

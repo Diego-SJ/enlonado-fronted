@@ -114,6 +114,18 @@ const functions = {
 		// Combinar nombre y sufijo para formar el username
 		const username = cleanFirstName + suffix
 		return username
+	},
+	generateRandomId: (): number => {
+		let length = 10
+		if (length <= 0) {
+			throw new Error('El largo debe ser un número positivo mayor que cero.')
+		}
+
+		// Genera un número aleatorio con el largo especificado
+		const max = Math.pow(10, length) - 1
+		const min = Math.pow(10, length - 1)
+
+		return Math.floor(Math.random() * (max - min + 1)) + min
 	}
 }
 
