@@ -17,7 +17,7 @@ import { MobileDatePicker, MobileTimePicker } from '@mui/x-date-pickers'
 import dayjs from 'dayjs'
 import Breadcrumb from '../layout/breadcrumb'
 import { APP_ROUTES } from '@/routes/routes'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '@/hooks/useStore'
 import { Controller, useForm } from 'react-hook-form'
@@ -31,6 +31,22 @@ import {
 } from '@/redux/reducers/enlonados/types'
 import { toast } from 'react-toastify'
 import functions from '@/utils/functions'
+import { companyActions } from '@/redux/reducers/companies'
+
+const initialFormData: Partial<Enlonado> = {
+	flat_type: FLAT_TYPE.SIMPLE,
+	company_id: '',
+	date: '',
+	driver_name: '',
+	end_time: '',
+	flat_1: '',
+	flat_2: '',
+	folio: '',
+	plate: '',
+	payment_method: ENLONADO_PAYMENT_METHOD.CASH,
+	start_time: '',
+	comments: ''
+}
 
 const AddNewEnlonado = () => {
 	const navigate = useNavigate()
@@ -39,14 +55,16 @@ const AddNewEnlonado = () => {
 	const { companies } = useAppSelector((state) => state.companies)
 	const { loading } = useAppSelector((state) => state.enlonados)
 	const [plateType, setPlateType] = useState<EnlonadoFlatType>(FLAT_TYPE.SIMPLE)
+	const onMounted = useRef(false)
 	const [_, setTimes] = useState<{ startTime: string | null; endTime: string | null }>({
 		startTime: null,
 		endTime: null
 	})
 	const {
+		reset,
 		control,
-		handleSubmit,
 		setValue,
+		handleSubmit,
 		formState: { errors }
 	} = useForm({
 		defaultValues: {
@@ -54,14 +72,12 @@ const AddNewEnlonado = () => {
 		} as Partial<Enlonado>
 	})
 
-	// const secondTimeError = useMemo(() => {
-	// 	if ((!times.startTime || !times.endTime) && !errors?.start_time?.message) return null
-	// 	if (!!errors?.start_time?.message) return errors?.start_time?.message
-
-	// 	let isValid = functions.isValidSecondTime(times.startTime, times.endTime)
-
-	// 	return !isValid ? 'La hora fin debe ser mayor a la hora inicio' : null
-	// }, [errors?.start_time?.message, times])
+	useEffect(() => {
+		if (!onMounted.current) {
+			onMounted.current = true
+			dispatch(companyActions.fetchCompanies())
+		}
+	}, [dispatch, onMounted])
 
 	const onSubmit = async (data: Partial<Enlonado>) => {
 		let times = {
@@ -82,7 +98,12 @@ const AddNewEnlonado = () => {
 
 		if (!!result) {
 			await toast.success(`Registro ${!!enlonado_id ? 'actualizado' : 'creado'} con exito`)
-			navigate(APP_ROUTES.APP.ENLONADOS.path)
+
+			if (!!enlonado_id) {
+				navigate(APP_ROUTES.APP.ENLONADOS.path)
+			} else {
+				reset(initialFormData)
+			}
 		} else {
 			toast.error('Error al guardar información')
 		}

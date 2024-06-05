@@ -154,6 +154,7 @@ const customActions = {
 				return true
 			}
 
+			dispatch(enlonadosActions.setLoading(false))
 			return true
 		},
 	deleteEnlonado: (enlonado_id: string) => async (dispatch: AppDispatch) => {
@@ -165,7 +166,6 @@ const customActions = {
 			return false
 		}
 
-		await dispatch(enlonadosActions.fetchEnlonados())
 		return true
 	},
 	fetchEnlonadoById: (enlonado_id: string) => async (dispatch: AppDispatch) => {

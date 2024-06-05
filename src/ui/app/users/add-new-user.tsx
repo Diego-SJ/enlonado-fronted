@@ -188,7 +188,7 @@ const AddNewUser = () => {
 													size="small"
 												>
 													<MenuItem value={UserRoles.ADMIN}>Administrador</MenuItem>
-													<MenuItem value={UserRoles.EMPLOYEE}>Colaborador</MenuItem>
+													<MenuItem value={UserRoles.MANAGER}>Colaborador</MenuItem>
 													<MenuItem value={UserRoles.SUPPORT}>Ayudante</MenuItem>
 												</Select>
 												{!!errors?.role && (

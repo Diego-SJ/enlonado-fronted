@@ -19,13 +19,13 @@ export type UserAuth = {
 
 export enum UserRoles {
 	ADMIN = 'ADMIN',
-	EMPLOYEE = 'EMPLOYEE',
+	MANAGER = 'EMPLOYEE',
 	SUPPORT = 'SUPPORT'
 }
 
 export const ROLE_NAME = {
 	[UserRoles.ADMIN]: 'Administrador',
-	[UserRoles.EMPLOYEE]: 'Colaborador',
+	[UserRoles.MANAGER]: 'Encargado',
 	[UserRoles.SUPPORT]: 'Ayudante'
 }
 

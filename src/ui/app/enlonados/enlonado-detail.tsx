@@ -1,16 +1,20 @@
-import { Box, Card, Grid, Tabs } from '@mui/material'
+import { Box, Button, Card, Grid, Tabs } from '@mui/material'
 import Tab from '@mui/material/Tab'
 import { APP_ROUTES } from '@/routes/routes'
 import Breadcrumb from '../layout/breadcrumb'
 import { useEffect, useRef, useState } from 'react'
 import NoteAltOutlinedIcon from '@mui/icons-material/NoteAltOutlined'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
-import { useParams } from 'react-router-dom'
-import { useAppDispatch } from '@/hooks/useStore'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useAppDispatch, useAppSelector } from '@/hooks/useStore'
 import { enlonadosActions } from '@/redux/reducers/enlonados'
 
 import EnlonadoInfoPanel from './detail-info'
 import EnlonadoEditPanel from './detail-edit'
+import useQueryParams from '@/hooks/useQuery'
+import { DeleteOutline } from '@mui/icons-material'
+import DeleteDialog from '@/ui/common/delete-dialog'
+import { toast } from 'react-toastify'
 
 interface TabPanelProps {
 	children?: React.ReactNode
@@ -47,9 +51,13 @@ export function a11yProps(index: number) {
 
 const EnlonadosDetailPage = () => {
 	const { enlonado_id } = useParams()
+	const navigate = useNavigate()
+	const query = useQueryParams()
 	const dispatch = useAppDispatch()
 	const [value, setValue] = useState(0)
+	const { loading } = useAppSelector((state) => state.enlonados)
 	const firstRender = useRef(false)
+	const isOpen = !!query.get('enlonado_id')
 
 	useEffect(() => {
 		if (!firstRender.current && !!enlonado_id) {
@@ -62,6 +70,22 @@ const EnlonadosDetailPage = () => {
 		setValue(newValue)
 	}
 
+	const onClose = () => {
+		query.remove('enlonado_id')
+	}
+
+	const onDelete = async () => {
+		const result = await dispatch(enlonadosActions.deleteEnlonado(enlonado_id!))
+		onClose()
+
+		if (result) {
+			toast.success('Registro eliminado correctamente')
+			navigate(APP_ROUTES.APP.ENLONADOS.path)
+		} else {
+			toast.error('Error al eliminar el registro')
+		}
+	}
+
 	return (
 		<Grid container spacing={2}>
 			<Breadcrumb
@@ -71,6 +95,20 @@ const EnlonadosDetailPage = () => {
 					{ name: 'Inicio', path: APP_ROUTES.APP.DASHBOARD.path },
 					{ name: 'Enlonados', path: APP_ROUTES.APP.ENLONADOS.path }
 				]}
+				topActions={
+					<Button
+						variant="contained"
+						color="error"
+						sx={{ color: 'white' }}
+						fullWidth
+						startIcon={<DeleteOutline />}
+						onClick={() => {
+							query.set('enlonado_id', enlonado_id!)
+						}}
+					>
+						Eliminar
+					</Button>
+				}
 			/>
 
 			<Grid item xs={12} sx={{ margin: '0 auto' }}>
@@ -103,6 +141,8 @@ const EnlonadosDetailPage = () => {
 					</Box>
 				</Card>
 			</Grid>
+
+			<DeleteDialog onClose={onClose} open={isOpen} onConfirm={onDelete} loading={loading} />
 		</Grid>
 	)
 }

@@ -15,7 +15,7 @@ import {
 import { MobileDatePicker, MobileTimePicker } from '@mui/x-date-pickers'
 import dayjs from 'dayjs'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '@/hooks/useStore'
 import { Controller, useForm } from 'react-hook-form'
@@ -30,6 +30,7 @@ import {
 import { toast } from 'react-toastify'
 import functions from '@/utils/functions'
 import { User } from '@/redux/reducers/users/types'
+import { companyActions } from '@/redux/reducers/companies'
 
 type EnlonadoEditPanelProps = {
 	handleChange: (_: React.SyntheticEvent, newValue: number) => void
@@ -42,6 +43,7 @@ const EnlonadoEditPanel = ({ handleChange }: EnlonadoEditPanelProps) => {
 	const { is_admin = false } = useAppSelector((state) => state.users?.user_auth?.user as User)
 	const { loading, enlonado } = useAppSelector((state) => state.enlonados)
 	const [plateType, setPlateType] = useState<EnlonadoFlatType | null>(null)
+	const onMounted = useRef(false)
 	const [_, setTimes] = useState<{ startTime: string | null; endTime: string | null }>({
 		startTime: null,
 		endTime: null
@@ -57,6 +59,13 @@ const EnlonadoEditPanel = ({ handleChange }: EnlonadoEditPanelProps) => {
 			flat_type: FLAT_TYPE.SIMPLE
 		} as Partial<Enlonado>
 	})
+
+	useEffect(() => {
+		if (!onMounted.current) {
+			onMounted.current = true
+			dispatch(companyActions.fetchCompanies())
+		}
+	}, [dispatch, onMounted])
 
 	const resetForm = useCallback(() => {
 		reset({

@@ -38,7 +38,7 @@ const columns: GridColDef<User>[] = [
 		renderCell: ({ row = {} }) => {
 			let color = {
 				[UserRoles.ADMIN]: 'sky',
-				[UserRoles.EMPLOYEE]: 'lime',
+				[UserRoles.MANAGER]: 'lime',
 				[UserRoles.SUPPORT]: 'amber'
 			}[row.role as UserRoles]
 

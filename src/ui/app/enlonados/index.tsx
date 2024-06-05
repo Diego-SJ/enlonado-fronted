@@ -26,6 +26,8 @@ import {
 import useQueryParams from '@/hooks/useQuery'
 import FilterAltOffOutlinedIcon from '@mui/icons-material/FilterAltOffOutlined'
 import { GridPaginationModel, GridSortModel } from '@mui/x-data-grid'
+import { companyActions } from '@/redux/reducers/companies'
+import { UserRoles } from '@/redux/reducers/users/types'
 
 type FormDataProps = {
 	manager_id?: string | null
@@ -65,6 +67,7 @@ const EnlonadosPage = () => {
 		if (!firstRender.current) {
 			firstRender.current = true
 			dispatch(enlonadosActions.fetchEnlonados())
+			dispatch(companyActions.fetchCompanies())
 		}
 	}, [dispatch, firstRender])
 
@@ -169,11 +172,15 @@ const EnlonadosPage = () => {
 								onChange={handleSelectChange}
 								label="Encargado"
 							>
-								{(users || [])?.map((user) => (
-									<MenuItem key={user?.user_id} value={user?.user_id}>
-										{user?.name + ' ' + user?.surnames}
-									</MenuItem>
-								))}
+								{(users || [])
+									?.filter((u) =>
+										[UserRoles.ADMIN, UserRoles.MANAGER].includes(u?.role as UserRoles)
+									)
+									?.map((user) => (
+										<MenuItem key={user?.user_id} value={user?.user_id}>
+											{user?.name + ' ' + user?.surnames}
+										</MenuItem>
+									))}
 							</Select>
 						</FormControl>
 					</Grid>
@@ -284,7 +291,7 @@ const EnlonadosPage = () => {
 								fullWidth
 								variant="contained"
 								color="primary"
-								onClick={() => onSearch()}
+								onClick={() => onSearch({} as GridPaginationModel)}
 								disabled={loading || !existAnyFilter}
 							>
 								{loading ? 'Cargando...' : 'Buscar'}
@@ -300,18 +307,20 @@ const EnlonadosPage = () => {
 								<FilterAltOffOutlinedIcon />
 							</Button>
 
-							<Tooltip title={`Puedes descargar máximo ${MAX_RECORDS} registros`}>
-								<Button
-									onClick={() => onDownload()}
-									fullWidth
-									variant="contained"
-									color="success"
-									sx={{ color: 'white' }}
-									disabled={loading || !enlonados.length || enlonados?.length > MAX_RECORDS}
-								>
-									{loading ? 'Cargando...' : 'Descargar CSV'}
-								</Button>
-							</Tooltip>
+							{isAdmin && (
+								<Tooltip title={`Puedes descargar máximo ${MAX_RECORDS} registros`}>
+									<Button
+										onClick={() => onDownload()}
+										fullWidth
+										variant="contained"
+										color="success"
+										sx={{ color: 'white' }}
+										disabled={loading || !enlonados.length || enlonados?.length > MAX_RECORDS}
+									>
+										{loading ? 'Cargando...' : 'Descargar CSV'}
+									</Button>
+								</Tooltip>
+							)}
 						</div>
 					</FormControl>
 				</Grid>

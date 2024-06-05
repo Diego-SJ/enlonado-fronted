@@ -24,6 +24,11 @@ export const APP_ROUTES = {
 				path: '/app/enlonados/:enlonado_id',
 				title: 'Detalle de enlonado',
 				hash: (_: TemplateStringsArray, id: string) => `/app/enlonados/${id}`
+			},
+			DELETE: {
+				path: '/app/enlonados/:enlonado_id/eliminar',
+				title: 'Eliminar enlonado',
+				hash: (_: TemplateStringsArray, id: string) => `/app/enlonados/${id}/eliminar`
 			}
 		},
 		WORK_SHIFTS: {
