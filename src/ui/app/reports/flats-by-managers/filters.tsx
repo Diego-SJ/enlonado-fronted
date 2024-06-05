@@ -1,8 +1,9 @@
 import useMediaQuery from '@/hooks/useMediaQueries'
 import { useAppDispatch, useAppSelector } from '@/hooks/useStore'
 import { reportsActions } from '@/redux/reducers/reports'
-import { User, UserRoles } from '@/redux/reducers/users/types'
+import { User } from '@/redux/reducers/users/types'
 import { GroupedData } from '@/utils/reports'
+import { getManagersOnly } from '@/utils/users'
 import { DeleteOutline, PictureAsPdfOutlined } from '@mui/icons-material'
 import {
 	Avatar,
@@ -79,38 +80,36 @@ const FlatsByManagerFilters = ({ downloadPDF }: Props) => {
 						<Typography variant="body1">Encargados</Typography>
 					</div>
 					<List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-						{[...users]
-							?.filter((u) => [UserRoles.ADMIN, UserRoles.MANAGER].includes(u?.role as UserRoles))
-							?.map((user) => {
-								const labelId = `checkbox-list-label-${user.user_id}`
+						{getManagersOnly(users)?.map((user) => {
+							const labelId = `checkbox-list-label-${user.user_id}`
 
-								return (
-									<ListItem
-										key={user.user_id}
-										disablePadding
-										secondaryAction={
-											<Checkbox
-												edge="start"
-												checked={userList.findIndex((u) => u?.user_id === user?.user_id) !== -1}
-												tabIndex={-1}
-												disableRipple
-												inputProps={{ 'aria-labelledby': labelId }}
+							return (
+								<ListItem
+									key={user.user_id}
+									disablePadding
+									secondaryAction={
+										<Checkbox
+											edge="start"
+											checked={userList.findIndex((u) => u?.user_id === user?.user_id) !== -1}
+											tabIndex={-1}
+											disableRipple
+											inputProps={{ 'aria-labelledby': labelId }}
+										/>
+									}
+								>
+									<ListItemButton role={undefined} onClick={handleToggle(user)} dense>
+										<ListItemIcon sx={{ minWidth: '28px' }}>
+											<Avatar
+												sx={{ width: 20, height: 20, fontSize: 12 }}
+												alt={user.name}
+												src={`/static/images/avatar/${user.name}.jpg`}
 											/>
-										}
-									>
-										<ListItemButton role={undefined} onClick={handleToggle(user)} dense>
-											<ListItemIcon sx={{ minWidth: '28px' }}>
-												<Avatar
-													sx={{ width: 20, height: 20, fontSize: 12 }}
-													alt={user.name}
-													src={`/static/images/avatar/${user.name}.jpg`}
-												/>
-											</ListItemIcon>
-											<ListItemText id={labelId} primary={user?.name} />
-										</ListItemButton>
-									</ListItem>
-								)
-							})}
+										</ListItemIcon>
+										<ListItemText id={labelId} primary={user?.name} />
+									</ListItemButton>
+								</ListItem>
+							)
+						})}
 					</List>
 				</div>
 

@@ -24,8 +24,8 @@ import { useAppDispatch, useAppSelector } from '@/hooks/useStore'
 import { Team, User } from '@/redux/reducers/users/types'
 import { userActions } from '@/redux/reducers/users'
 import { toast } from 'react-toastify'
-import { useEffect, useState } from 'react'
-import { formatTeamMembers, parseTeamMembers } from '@/utils/users'
+import { useEffect, useRef, useState } from 'react'
+import { formatTeamMembers, getManagersOnly, parseTeamMembers } from '@/utils/users'
 
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
@@ -56,12 +56,20 @@ const AddWorkShiftPage = () => {
 	const [members, setMembers] = useState<User[]>([])
 	const [personUserId, setPersonUserId] = useState<string[]>([])
 	const [managerId, setManagerId] = useState('')
+	const onMounted = useRef(false)
 	const {
 		control,
 		handleSubmit,
 		reset,
 		formState: { errors, isDirty }
 	} = useForm()
+
+	useEffect(() => {
+		if (!onMounted.current) {
+			onMounted.current = true
+			dispatch(userActions.fetchUsers())
+		}
+	}, [dispatch, onMounted])
 
 	useEffect(() => {
 		const team_members = users.filter((user: User) => user.user_id !== managerId)
@@ -161,7 +169,7 @@ const AddWorkShiftPage = () => {
 													error={!!errors.manager_id}
 													size="small"
 												>
-													{users?.map((user) => (
+													{getManagersOnly(users)?.map((user) => (
 														<MenuItem key={user.user_id} value={user.user_id}>
 															{user.name}
 														</MenuItem>
