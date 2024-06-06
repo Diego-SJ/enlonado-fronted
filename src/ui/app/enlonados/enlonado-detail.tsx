@@ -15,6 +15,7 @@ import useQueryParams from '@/hooks/useQuery'
 import { DeleteOutline } from '@mui/icons-material'
 import DeleteDialog from '@/ui/common/delete-dialog'
 import { toast } from 'react-toastify'
+import { User } from '@/redux/reducers/users/types'
 
 interface TabPanelProps {
 	children?: React.ReactNode
@@ -56,6 +57,7 @@ const EnlonadosDetailPage = () => {
 	const dispatch = useAppDispatch()
 	const [value, setValue] = useState(0)
 	const { loading } = useAppSelector((state) => state.enlonados)
+	const { is_admin } = useAppSelector((state) => state.users?.user_auth?.user as User)
 	const firstRender = useRef(false)
 	const isOpen = !!query.get('enlonado_id')
 
@@ -96,18 +98,20 @@ const EnlonadosDetailPage = () => {
 					{ name: 'Enlonados', path: APP_ROUTES.APP.ENLONADOS.path }
 				]}
 				topActions={
-					<Button
-						variant="contained"
-						color="error"
-						sx={{ color: 'white' }}
-						fullWidth
-						startIcon={<DeleteOutline />}
-						onClick={() => {
-							query.set('enlonado_id', enlonado_id!)
-						}}
-					>
-						Eliminar
-					</Button>
+					is_admin ? (
+						<Button
+							variant="contained"
+							color="error"
+							sx={{ color: 'white' }}
+							fullWidth
+							startIcon={<DeleteOutline />}
+							onClick={() => {
+								query.set('enlonado_id', enlonado_id!)
+							}}
+						>
+							Eliminar
+						</Button>
+					) : null
 				}
 			/>
 
