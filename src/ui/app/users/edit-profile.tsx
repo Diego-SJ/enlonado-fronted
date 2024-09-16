@@ -29,6 +29,7 @@ import { useCopyToClipboard } from '@uidotdev/usehooks'
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined'
 import { blue } from '@mui/material/colors'
 import Chip from '@/ui/common/chip'
+import UsersPermissions from './permissions'
 
 const EditProfilePage = () => {
 	const { user_id } = useParams()
@@ -277,6 +278,8 @@ const EditProfilePage = () => {
 									</Grid>
 								)}
 							</Grid>
+
+							<UsersPermissions />
 
 							<Button
 								type="submit"
