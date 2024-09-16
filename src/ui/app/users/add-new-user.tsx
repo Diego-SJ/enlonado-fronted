@@ -281,6 +281,8 @@ const AddNewUser = () => {
 								)}
 							</Grid>
 
+							{/* <UsersPermissions /> */}
+
 							<Button
 								type="submit"
 								fullWidth

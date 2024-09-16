@@ -12,7 +12,7 @@ import {
 	Select,
 	TextField
 } from '@mui/material'
-import { MobileDatePicker, MobileTimePicker } from '@mui/x-date-pickers'
+import { MobileDatePicker, TimePicker } from '@mui/x-date-pickers'
 import dayjs from 'dayjs'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
@@ -332,7 +332,7 @@ const EnlonadoEditPanel = ({ handleChange }: EnlonadoEditPanelProps) => {
 							name="start_time"
 							control={control}
 							render={({ field }) => (
-								<MobileTimePicker
+								<TimePicker
 									slotProps={{
 										textField: {
 											size: 'small',
@@ -361,7 +361,7 @@ const EnlonadoEditPanel = ({ handleChange }: EnlonadoEditPanelProps) => {
 							name="end_time"
 							control={control}
 							render={({ field }) => (
-								<MobileTimePicker
+								<TimePicker
 									slotProps={{
 										textField: {
 											size: 'small',

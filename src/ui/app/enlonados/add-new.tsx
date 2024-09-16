@@ -13,7 +13,7 @@ import {
 	Select,
 	TextField
 } from '@mui/material'
-import { MobileDatePicker, MobileTimePicker } from '@mui/x-date-pickers'
+import { MobileDatePicker, TimePicker } from '@mui/x-date-pickers'
 import dayjs from 'dayjs'
 import Breadcrumb from '../layout/breadcrumb'
 import { APP_ROUTES } from '@/routes/routes'
@@ -207,16 +207,16 @@ const AddNewEnlonado = () => {
 											name="start_time"
 											control={control}
 											render={({ field }) => (
-												<MobileTimePicker
+												<TimePicker
+													label="Hora inicio"
 													closeOnSelect
-													ampmInClock
 													slotProps={{
 														textField: {
 															size: 'small',
 															margin: 'normal',
 															fullWidth: true,
-															helperText: (errors?.start_time?.message || '') as string,
-															error: !!errors.start_time,
+															helperText: (errors?.date?.message || '') as string,
+															error: !!errors.date,
 															InputLabelProps: { shrink: !!field?.value }
 														}
 													}}
@@ -228,7 +228,6 @@ const AddNewEnlonado = () => {
 														})
 														field.onChange(date)
 													}}
-													label="Hora inicio"
 												/>
 											)}
 										/>
@@ -237,9 +236,9 @@ const AddNewEnlonado = () => {
 											name="end_time"
 											control={control}
 											render={({ field }) => (
-												<MobileTimePicker
+												<TimePicker
+													label="Hora fin"
 													closeOnSelect
-													ampmInClock
 													slotProps={{
 														textField: {
 															size: 'small',
@@ -258,7 +257,6 @@ const AddNewEnlonado = () => {
 														})
 														field.onChange(date)
 													}}
-													label="Hora fin"
 												/>
 											)}
 										/>

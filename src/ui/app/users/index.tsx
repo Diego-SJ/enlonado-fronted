@@ -14,7 +14,7 @@ import { useDebounce } from '@uidotdev/usehooks'
 const UsersPage = () => {
 	const navigate = useNavigate()
 	const dispatch = useAppDispatch()
-	const { data } = useAppSelector((state) => state.users)
+	const { data } = useAppSelector(({ users }) => users)
 	const [users, setUsers] = useState<User[]>([])
 	const [searchTerm, setSearchTerm] = useState('')
 	const firstRender = useRef(false)

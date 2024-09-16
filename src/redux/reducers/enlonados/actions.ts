@@ -36,8 +36,6 @@ const customActions = {
 				query.order('date', { ascending: false })
 			}
 
-			console.log(filters)
-
 			const page = filters?.page || 0
 			const pageSize = 20
 			let offset = page * pageSize

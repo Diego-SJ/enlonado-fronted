@@ -29,19 +29,6 @@ export const ROLE_NAME = {
 	[UserRoles.SUPPORT]: 'Ayudante'
 }
 
-export type User = {
-	user_id: string
-	created_at: Date | string
-	name: string
-	surnames?: string
-	phone?: string
-	emergency_contacts?: EmergencyContacts | null
-	role?: UserRoles
-	username: string
-	password: string
-	is_admin?: boolean
-}
-
 export type EmergencyContacts = {
 	[key: string]: {
 		name: string
@@ -63,4 +50,22 @@ export type Team = {
 
 export type TeamMembers = {
 	list?: Partial<User & { fullname?: string }>[]
+}
+
+export type User = {
+	user_id: string
+	created_at: Date | string
+	name: string
+	surnames?: string
+	phone?: string
+	emergency_contacts?: EmergencyContacts | null
+	role?: UserRoles
+	username: string
+	password: string
+	is_admin?: boolean
+	permissions?: Permissions
+}
+
+export type Permissions = {
+	[key: string]: boolean
 }
