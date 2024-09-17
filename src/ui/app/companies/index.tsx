@@ -10,11 +10,14 @@ import functions from '@/utils/functions'
 import { useDebounce } from '@uidotdev/usehooks'
 import { Company } from '@/redux/reducers/companies/types'
 import { companyActions } from '@/redux/reducers/companies'
+import { User } from '@/redux/reducers/users/types'
 
 const CompaniesPage = () => {
 	const navigate = useNavigate()
 	const dispatch = useAppDispatch()
 	const { companies: data = [] } = useAppSelector((state) => state.companies)
+	const { is_admin, permissions } = useAppSelector(({ users }) => users?.user_auth?.user as User)
+
 	const [companies, setCompanies] = useState<Company[]>([])
 	const [searchTerm, setSearchTerm] = useState('')
 	const firstRender = useRef(false)
@@ -51,7 +54,7 @@ const CompaniesPage = () => {
 				title="Empresas"
 				current="Empresas"
 				links={[{ name: 'Inicio', path: APP_ROUTES.APP.DASHBOARD.path }]}
-				onAdd={handleAddItem}
+				onAdd={is_admin || permissions?.companies?.edit_company ? handleAddItem : null}
 			>
 				<Grid item xs={12} md={4}>
 					<TextField

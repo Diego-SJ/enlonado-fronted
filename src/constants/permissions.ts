@@ -9,7 +9,20 @@ export const PERMISSIONS = {
 	}
 }
 
-export const PERMISSIONS_NAMES = {
+export const DEFAULT_PERMISSIONS = {
+	enlonados: {
+		edit_folio: false
+	},
+	companies: {
+		view_company_module: false,
+		edit_company: false,
+		delete_company: false
+	}
+}
+
+export type UserPermissions = typeof PERMISSIONS
+
+export const PERMISSIONS_NAMES: { [key: string]: string } = {
 	enlonados: 'Enlonados',
 	companies: 'Empresas',
 	edit_folio: 'Editar folio',

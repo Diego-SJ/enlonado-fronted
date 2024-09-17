@@ -27,7 +27,7 @@ import useQueryParams from '@/hooks/useQuery'
 import FilterAltOffOutlinedIcon from '@mui/icons-material/FilterAltOffOutlined'
 import { GridPaginationModel, GridSortModel } from '@mui/x-data-grid'
 import { companyActions } from '@/redux/reducers/companies'
-import { UserRoles } from '@/redux/reducers/users/types'
+import { User, UserRoles } from '@/redux/reducers/users/types'
 
 type FormDataProps = {
 	manager_id?: string | null
@@ -61,7 +61,7 @@ const EnlonadosPage = () => {
 	const { companies = [] } = useAppSelector((state) => state.companies)
 	const [formData, setFormData] = useState<FormDataProps>(initialFormData)
 	const firstRender = useRef(false)
-	const isAdmin = user_auth?.user?.is_admin
+	const user = user_auth?.user as User
 
 	useEffect(() => {
 		if (!firstRender.current) {
@@ -157,7 +157,7 @@ const EnlonadosPage = () => {
 				current="Enlonados"
 				links={[{ name: 'Inicio', path: APP_ROUTES.APP.DASHBOARD.path }]}
 			>
-				{isAdmin && (
+				{user?.is_admin && (
 					<Grid item xs={6} sm={6} md={6} lg={2}>
 						<FormControl fullWidth>
 							<InputLabel id="manager_id-label" sx={{ marginTop: '-7px' }}>
@@ -307,7 +307,7 @@ const EnlonadosPage = () => {
 								<FilterAltOffOutlinedIcon />
 							</Button>
 
-							{isAdmin && (
+							{user?.is_admin && (
 								<Tooltip title={`Puedes descargar máximo ${MAX_RECORDS} registros`}>
 									<Button
 										onClick={() => onDownload()}

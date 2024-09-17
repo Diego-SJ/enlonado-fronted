@@ -57,7 +57,11 @@ const customActions = {
 	},
 	fetchUsers: () => async (dispatch: AppDispatch) => {
 		dispatch(userActions.setLoading(true))
-		const { data, error } = await supabase.from('users').select('*').eq('is_active', true)
+		const { data, error } = await supabase
+			.from('users')
+			.select('*')
+			.eq('is_active', true)
+			.order('created_at', { ascending: false })
 
 		if (error) {
 			dispatch(userActions.setLoading(false))
@@ -87,7 +91,34 @@ const customActions = {
 			return false
 		}
 
-		await dispatch(userActions.fetchUsers())
+		dispatch(userActions.setLoading(false))
+		return true
+	},
+	fetchUserById: async (user_id: string): Promise<User | null> => {
+		const { data, error } = await supabase.from('users').select('*').eq('user_id', user_id).single()
+
+		if (error) {
+			return null
+		}
+
+		return data as User
+	},
+	fetchUserProfile: () => async (dispatch: AppDispatch, getState: AppState) => {
+		dispatch(userActions.setLoading(true))
+		const { user_id } = getState().users.user_auth.user as User
+		const { data, error } = await supabase.from('users').select('*').eq('user_id', user_id).single()
+
+		if (error) {
+			dispatch(userActions.setLoading(false))
+			return false
+		}
+
+		dispatch(
+			userActions.setUserProfile({
+				...data,
+				is_admin: data?.role === 'ADMIN'
+			})
+		)
 		dispatch(userActions.setLoading(false))
 		return true
 	},

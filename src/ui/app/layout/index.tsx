@@ -90,7 +90,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 export default function MainLayout() {
 	const theme = useTheme()
 	const dispatch = useAppDispatch()
-	const { is_admin } = useAppSelector((state) => state.users?.user_auth?.user as User)
+	const { is_admin, permissions } = useAppSelector((state) => state.users?.user_auth?.user as User)
 	const [open, setOpen] = React.useState(false)
 	const { isDesktop, isTablet } = useMediaQuery()
 	const navigate = useNavigate()
@@ -191,19 +191,20 @@ export default function MainLayout() {
 						</ListItemButton>
 					</ListItem>
 
+					{is_admin || permissions?.companies?.view_company_module ? (
+						<ListItem disablePadding>
+							<ListItemButton onClick={() => changeRoute(APP_ROUTES.APP.COMPANIES.path)}>
+								<ListItemIcon>{<BusinessOutlinedIcon />}</ListItemIcon>
+								<ListItemText primary="Empresas" />
+							</ListItemButton>
+						</ListItem>
+					) : null}
 					{is_admin && (
 						<>
 							<ListItem disablePadding>
 								<ListItemButton onClick={() => changeRoute(APP_ROUTES.APP.USERS.path)}>
 									<ListItemIcon>{<PeopleAltOutlinedIcon />}</ListItemIcon>
 									<ListItemText primary="Colaboradores" />
-								</ListItemButton>
-							</ListItem>
-
-							<ListItem disablePadding>
-								<ListItemButton onClick={() => changeRoute(APP_ROUTES.APP.COMPANIES.path)}>
-									<ListItemIcon>{<BusinessOutlinedIcon />}</ListItemIcon>
-									<ListItemText primary="Empresas" />
 								</ListItemButton>
 							</ListItem>
 
@@ -232,6 +233,11 @@ export default function MainLayout() {
 						</ListItemButton>
 					</ListItem>
 				</List>
+				<div className="mt-auto text-center">
+					<Typography variant="caption" align="center">
+						Versión 1.0.1
+					</Typography>
+				</div>
 			</Drawer>
 			<Main open={open}>
 				<DrawerHeader />

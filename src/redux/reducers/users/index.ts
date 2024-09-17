@@ -29,6 +29,9 @@ const users = createSlice({
 		},
 		setTeams(state, action: PayloadAction<Team[]>) {
 			state.teams = action.payload
+		},
+		setUserProfile(state, action: PayloadAction<User>) {
+			state.user_auth = { ...state.user_auth, user: action.payload }
 		}
 	}
 })

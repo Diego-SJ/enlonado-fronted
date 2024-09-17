@@ -1,80 +1,87 @@
-import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material'
+import {
+	Accordion,
+	AccordionDetails,
+	AccordionSummary,
+	Checkbox,
+	FormControlLabel,
+	Typography
+} from '@mui/material'
+import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined'
 import { useState } from 'react'
+import { PERMISSIONS, PERMISSIONS_NAMES, UserPermissions } from '@/constants/permissions'
 
-export default function UsersPermissions() {
+type Props = {
+	currentPermissions: UserPermissions
+	setCurrentPermissions: React.Dispatch<React.SetStateAction<UserPermissions>>
+}
+
+const UsersPermissions = ({ currentPermissions, setCurrentPermissions }: Props) => {
 	const [expanded, setExpanded] = useState<string | false>(false)
 
-	const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+	const handleChange = (panel: string) => (_: React.SyntheticEvent, isExpanded: boolean) => {
 		setExpanded(isExpanded ? panel : false)
 	}
 
 	return (
-		<div>
-			<Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
-				<AccordionSummary
-					// expandIcon={<GridExpandMoreIcon />}
-					aria-controls="panel1bh-content"
-					id="panel1bh-header"
-				>
-					<Typography sx={{ width: '33%', flexShrink: 0 }}>General settings</Typography>
-					<Typography sx={{ color: 'text.secondary' }}>I am an accordion</Typography>
-				</AccordionSummary>
-				<AccordionDetails>
-					<Typography>
-						Nulla facilisi. Phasellus sollicitudin nulla et quam mattis feugiat. Aliquam eget
-						maximus est, id dignissim quam.
-					</Typography>
-				</AccordionDetails>
-			</Accordion>
-			<Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
-				<AccordionSummary
-					// expandIcon={<GridExpandMoreIcon />}
-					aria-controls="panel2bh-content"
-					id="panel2bh-header"
-				>
-					<Typography sx={{ width: '33%', flexShrink: 0 }}>Users</Typography>
-					<Typography sx={{ color: 'text.secondary' }}>You are currently not an owner</Typography>
-				</AccordionSummary>
-				<AccordionDetails>
-					<Typography>
-						Donec placerat, lectus sed mattis semper, neque lectus feugiat lectus, varius pulvinar
-						diam eros in elit. Pellentesque convallis laoreet laoreet.
-					</Typography>
-				</AccordionDetails>
-			</Accordion>
-			<Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
-				<AccordionSummary
-					// expandIcon={<ExpandMoreIcon />}
-					aria-controls="panel3bh-content"
-					id="panel3bh-header"
-				>
-					<Typography sx={{ width: '33%', flexShrink: 0 }}>Advanced settings</Typography>
-					<Typography sx={{ color: 'text.secondary' }}>
-						Filtering has been entirely disabled for whole web server
-					</Typography>
-				</AccordionSummary>
-				<AccordionDetails>
-					<Typography>
-						Nunc vitae orci ultricies, auctor nunc in, volutpat nisl. Integer sit amet egestas eros,
-						vitae egestas augue. Duis vel est augue.
-					</Typography>
-				</AccordionDetails>
-			</Accordion>
-			<Accordion expanded={expanded === 'panel4'} onChange={handleChange('panel4')}>
-				<AccordionSummary
-					// expandIcon={<ExpandMoreIcon />}
-					aria-controls="panel4bh-content"
-					id="panel4bh-header"
-				>
-					<Typography sx={{ width: '33%', flexShrink: 0 }}>Personal data</Typography>
-				</AccordionSummary>
-				<AccordionDetails>
-					<Typography>
-						Nunc vitae orci ultricies, auctor nunc in, volutpat nisl. Integer sit amet egestas eros,
-						vitae egestas augue. Duis vel est augue.
-					</Typography>
-				</AccordionDetails>
-			</Accordion>
+		<div className="bg-red w-full">
+			<div className="flex items-center space-x-1 mb-3">
+				<LockOpenOutlinedIcon />
+				<Typography variant="subtitle1" sx={{ margin: 0 }}>
+					Permisos
+				</Typography>
+			</div>
+
+			{Object.entries(PERMISSIONS).map(([key, value]) => {
+				return (
+					<Accordion key={key} expanded={expanded === key} onChange={handleChange(key)}>
+						<AccordionSummary aria-controls={`${key}-content`} id={`${key}-header`}>
+							<Typography variant="subtitle2">{PERMISSIONS_NAMES[key]}</Typography>
+						</AccordionSummary>
+						<AccordionDetails>
+							<div className="grid grid-cols-1 gap-2">
+								{Object.keys(value).map((subPermissionKey) => {
+									const currentPermission = currentPermissions[key as keyof UserPermissions]
+									return (
+										<div className="flex items-center" key={subPermissionKey}>
+											<FormControlLabel
+												label={PERMISSIONS_NAMES[subPermissionKey]}
+												control={
+													<Checkbox
+														checked={
+															!!currentPermission[
+																subPermissionKey as keyof typeof currentPermission
+															]
+														}
+														onChange={() => {
+															setCurrentPermissions((prev) => {
+																let subPermissions = prev[key as keyof UserPermissions]
+
+																return {
+																	...prev,
+																	[key]: {
+																		...subPermissions,
+																		[subPermissionKey]:
+																			!subPermissions[
+																				subPermissionKey as keyof typeof subPermissions
+																			]
+																	}
+																} as UserPermissions
+															})
+														}}
+														inputProps={{ 'aria-label': 'controlled' }}
+													/>
+												}
+											/>
+										</div>
+									)
+								})}
+							</div>
+						</AccordionDetails>
+					</Accordion>
+				)
+			})}
 		</div>
 	)
 }
+
+export default UsersPermissions

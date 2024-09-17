@@ -6,6 +6,9 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { ToastContainer } from 'react-toastify'
 
 import 'react-toastify/dist/ReactToastify.css'
+import { useAppDispatch, useAppSelector } from '@/hooks/useStore'
+import { useEffect, useRef } from 'react'
+import { userActions } from '@/redux/reducers/users'
 
 const theme = createTheme({
 	palette: {
@@ -54,6 +57,20 @@ const theme = createTheme({
 })
 
 function App() {
+	const dispatch = useAppDispatch()
+	const { isLogged } = useAppSelector(({ users }) => users)
+	const mounted = useRef(false)
+
+	useEffect(() => {
+		if (!mounted.current) {
+			mounted.current = true
+			if (isLogged) {
+				;(async () => {
+					dispatch(userActions.fetchUserProfile())
+				})()
+			}
+		}
+	}, [isLogged, mounted, dispatch])
 	return (
 		<ThemeProvider theme={theme}>
 			<LocalizationProvider dateAdapter={AdapterDayjs}>

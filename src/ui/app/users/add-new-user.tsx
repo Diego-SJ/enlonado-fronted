@@ -7,14 +7,9 @@ import {
 	Grid,
 	IconButton,
 	InputAdornment,
-	InputLabel,
-	MenuItem,
-	OutlinedInput,
-	Select,
-	Switch,
-	TextField,
-	Typography
+	InputLabel
 } from '@mui/material'
+import { MenuItem, OutlinedInput, Select, Switch, TextField, Typography } from '@mui/material'
 import { useForm, Controller } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import Breadcrumb from '../layout/breadcrumb'
@@ -23,17 +18,21 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '@/hooks/useStore'
 import { userActions } from '@/redux/reducers/users'
 import { User, UserRoles } from '@/redux/reducers/users/types'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 import functions from '@/utils/functions'
 import { useCopyToClipboard } from '@uidotdev/usehooks'
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined'
+import UsersPermissions from './permissions'
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined'
+import { DEFAULT_PERMISSIONS, UserPermissions } from '@/constants/permissions'
+import isEqual from 'lodash/isEqual'
 
 const AddNewUser = () => {
 	const navigate = useNavigate()
 	const { user_id } = useParams()
 	const dispatch = useAppDispatch()
-	const { loading, data } = useAppSelector((state) => state.users)
+	const { loading, data } = useAppSelector(({ users }) => users)
 	const {
 		control,
 		handleSubmit,
@@ -46,16 +45,23 @@ const AddNewUser = () => {
 	const [createCredentiasl, setCreateCredentiasl] = useState(false)
 	const [_, setCopiedText] = useCopyToClipboard()
 	const [currentUser, setCurrentUser] = useState<Partial<User>>({})
+	const [currentPermissions, setCurrentPermissions] = useState<UserPermissions>(DEFAULT_PERMISSIONS)
+	const mounted = useRef(false)
 
 	useEffect(() => {
-		if (user_id) {
-			let user = data.find((user: User) => user.user_id === user_id)
-			if (user) {
-				reset(user)
-				setCurrentUser(user)
-			}
+		if (user_id && !mounted.current) {
+			mounted.current = true
+			;(async () => {
+				const user = await userActions.fetchUserById(user_id)
+				if (user) {
+					let permissions = user.permissions || DEFAULT_PERMISSIONS
+					setCurrentUser({ ...user, permissions })
+					setCurrentPermissions(permissions)
+					reset(user)
+				}
+			})()
 		}
-	}, [user_id])
+	}, [user_id, mounted])
 
 	const handleClickShowPassword = () => setShowPassword((show) => !show)
 
@@ -64,7 +70,15 @@ const AddNewUser = () => {
 	}
 
 	const onSubmit = async (data: Partial<User>) => {
-		const result = await dispatch(userActions.createUser(data, user_id))
+		const result = await dispatch(
+			userActions.createUser(
+				{
+					...data,
+					permissions: currentPermissions
+				},
+				user_id
+			)
+		)
 
 		if (result) {
 			toast.success(`Usuario ${!!user_id ? 'actualizado' : 'creado'} con exito`)
@@ -105,11 +119,14 @@ const AddNewUser = () => {
 			<Grid item xs={12} lg={8} sx={{ margin: '0 auto' }}>
 				<Card elevation={0}>
 					<div className="px-4 pt-4 pb-6 md:px-8 md:py-10">
-						<Typography variant="h6" sx={{ marginTop: 0 }}>
-							{!!user_id ? 'Editar colaborador' : 'Nuevo colaborador'}
-						</Typography>
+						<div className="flex items-center space-x-1 mb-3">
+							<AccountCircleOutlinedIcon />
+							<Typography variant="subtitle1" sx={{ margin: 0 }}>
+								{!!user_id ? 'Editar colaborador' : 'Nuevo colaborador'}
+							</Typography>
+						</div>
 						<form onSubmit={handleSubmit(onSubmit as any)}>
-							<Grid container spacing={2}>
+							<Grid container spacing={2} className="!mb-5">
 								<Grid item xs={12} md={6}>
 									<Controller
 										name="name"
@@ -208,6 +225,7 @@ const AddNewUser = () => {
 											<TextField
 												{...field}
 												error={!!errors.username}
+												autoComplete="username"
 												helperText={errors.username ? (errors.username.message as string) : ''}
 												label="Usuario"
 												variant="outlined"
@@ -238,6 +256,7 @@ const AddNewUser = () => {
 													id="outlined-adornment-password"
 													size="small"
 													fullWidth
+													autoComplete="new-password"
 													error={!!errors.password}
 													type={showPassword ? 'text' : 'password'}
 													endAdornment={
@@ -281,8 +300,10 @@ const AddNewUser = () => {
 								)}
 							</Grid>
 
-							{/* <UsersPermissions /> */}
-
+							<UsersPermissions
+								currentPermissions={currentPermissions}
+								setCurrentPermissions={setCurrentPermissions}
+							/>
 							<Button
 								type="submit"
 								fullWidth
@@ -290,7 +311,9 @@ const AddNewUser = () => {
 								color="primary"
 								size="large"
 								sx={{ marginTop: 3 }}
-								disabled={loading || !isDirty}
+								disabled={
+									loading && !isDirty && !isEqual(currentUser?.permissions, currentPermissions)
+								}
 							>
 								{loading ? 'Cargando...' : !!user_id ? 'Guardar cambios' : 'Registrar'}
 							</Button>

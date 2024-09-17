@@ -7,7 +7,7 @@ type Props = {
 	title?: string
 	current?: string
 	links?: { name: string; path: string }[]
-	onAdd?: () => void
+	onAdd?: (() => void) | null
 	topActions?: ReactNode
 	children?: ReactNode
 }

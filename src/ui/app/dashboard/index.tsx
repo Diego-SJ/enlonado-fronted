@@ -5,10 +5,11 @@ import { APP_ROUTES } from '@/routes/routes'
 import { blue, green, orange, purple } from '@mui/material/colors'
 import { AddBusinessOutlined, GroupAddOutlined, PersonAddAlt1Outlined } from '@mui/icons-material'
 import { useAppSelector } from '@/hooks/useStore'
+import { User } from '@/redux/reducers/users/types'
 
 const DashboardPage = () => {
 	const navigate = useNavigate()
-	const isAdmin = useAppSelector((state) => !!state?.users?.user_auth?.user?.is_admin)
+	const { is_admin, permissions } = useAppSelector(({ users }) => users?.user_auth?.user as User)
 
 	const routeChange = (path: string) => {
 		navigate(path)
@@ -32,25 +33,27 @@ const DashboardPage = () => {
 				</Card>
 			</Grid>
 
-			{isAdmin && (
-				<>
-					<Grid item xs={12} md={6} lg={4}>
-						<Card
-							elevation={2}
-							onClick={() => routeChange(APP_ROUTES.APP.COMPANIES.ADD.path)}
-							sx={{ cursor: 'pointer' }}
-						>
-							<div className="px-6 py-4">
-								<Avatar sx={{ width: 60, height: 60, bgcolor: orange.A400 }}>
-									<AddBusinessOutlined sx={{ width: 40, height: 40 }} />
-								</Avatar>
-								<Typography variant="h6" sx={{ marginTop: 1 }}>
-									Registrar empresa
-								</Typography>
-							</div>
-						</Card>
-					</Grid>
+			{is_admin || permissions?.companies?.edit_company ? (
+				<Grid item xs={12} md={6} lg={4}>
+					<Card
+						elevation={2}
+						onClick={() => routeChange(APP_ROUTES.APP.COMPANIES.ADD.path)}
+						sx={{ cursor: 'pointer' }}
+					>
+						<div className="px-6 py-4">
+							<Avatar sx={{ width: 60, height: 60, bgcolor: orange.A400 }}>
+								<AddBusinessOutlined sx={{ width: 40, height: 40 }} />
+							</Avatar>
+							<Typography variant="h6" sx={{ marginTop: 1 }}>
+								Registrar empresa
+							</Typography>
+						</div>
+					</Card>
+				</Grid>
+			) : null}
 
+			{is_admin && (
+				<>
 					<Grid item xs={12} md={6} lg={4}>
 						<Card
 							elevation={2}

@@ -40,7 +40,9 @@ const EnlonadoEditPanel = ({ handleChange }: EnlonadoEditPanelProps) => {
 	const dispatch = useAppDispatch()
 	const { enlonado_id } = useParams()
 	const { companies } = useAppSelector((state) => state.companies)
-	const { is_admin = false } = useAppSelector((state) => state.users?.user_auth?.user as User)
+	const { is_admin = false, permissions } = useAppSelector(
+		(state) => state.users?.user_auth?.user as User
+	)
 	const { loading, enlonado } = useAppSelector((state) => state.enlonados)
 	const [plateType, setPlateType] = useState<EnlonadoFlatType | null>(null)
 	const onMounted = useRef(false)
@@ -136,7 +138,7 @@ const EnlonadoEditPanel = ({ handleChange }: EnlonadoEditPanelProps) => {
 								margin="normal"
 								size="small"
 								fullWidth
-								disabled={!is_admin}
+								disabled={!is_admin && !permissions?.enlonados?.edit_folio}
 								inputProps={{ style: { textTransform: 'uppercase' } }}
 								helperText={(errors?.folio?.message || null) as string}
 								error={!!errors.folio}

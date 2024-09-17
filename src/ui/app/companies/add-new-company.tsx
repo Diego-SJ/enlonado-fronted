@@ -23,11 +23,14 @@ import { companyActions } from '@/redux/reducers/companies'
 import { ENLONADO_PAYMENT_METHOD } from '@/redux/reducers/enlonados/types'
 import { AddOutlined, DeleteOutline } from '@mui/icons-material'
 import functions from '@/utils/functions'
+import { User } from '@/redux/reducers/users/types'
 
 const AddNewCompany = () => {
 	const navigate = useNavigate()
 	const { company_id } = useParams()
 	const dispatch = useAppDispatch()
+
+	const { is_admin, permissions } = useAppSelector(({ users }) => users?.user_auth?.user as User)
 	const { loading, companies } = useAppSelector((state) => state.companies)
 	const [{ phones, emails }, setContactInfo] = useState<CompanyContactInfo>({
 		emails: [],
@@ -329,18 +332,19 @@ const AddNewCompany = () => {
 									/>
 								</Grid>
 							</Grid>
-
-							<Button
-								type="submit"
-								fullWidth
-								variant="contained"
-								color="primary"
-								size="large"
-								sx={{ marginTop: 3 }}
-								disabled={loading}
-							>
-								{loading ? 'Cargando...' : !!company_id ? 'Guardar cambios' : 'Registrar'}
-							</Button>
+							{is_admin || permissions?.companies?.edit_company ? (
+								<Button
+									type="submit"
+									fullWidth
+									variant="contained"
+									color="primary"
+									size="large"
+									sx={{ marginTop: 3 }}
+									disabled={loading}
+								>
+									{loading ? 'Cargando...' : !!company_id ? 'Guardar cambios' : 'Registrar'}
+								</Button>
+							) : null}
 						</form>
 					</div>
 				</Card>

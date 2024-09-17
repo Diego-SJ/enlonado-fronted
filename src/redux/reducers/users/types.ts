@@ -1,3 +1,5 @@
+import { UserPermissions } from '@/constants/permissions'
+
 export type UsersSlice = {
 	user_auth: UserAuth
 	isLogged: boolean
@@ -63,9 +65,5 @@ export type User = {
 	username: string
 	password: string
 	is_admin?: boolean
-	permissions?: Permissions
-}
-
-export type Permissions = {
-	[key: string]: boolean
+	permissions: UserPermissions | null
 }

@@ -54,6 +54,7 @@ const AddNewEnlonado = () => {
 	const { enlonado_id } = useParams()
 	const { companies } = useAppSelector((state) => state.companies)
 	const { loading } = useAppSelector((state) => state.enlonados)
+
 	const [plateType, setPlateType] = useState<EnlonadoFlatType>(FLAT_TYPE.SIMPLE)
 	const onMounted = useRef(false)
 	const [_, setTimes] = useState<{ startTime: string | null; endTime: string | null }>({
