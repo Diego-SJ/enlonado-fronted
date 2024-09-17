@@ -32,7 +32,7 @@ const AddNewUser = () => {
 	const navigate = useNavigate()
 	const { user_id } = useParams()
 	const dispatch = useAppDispatch()
-	const { loading, data } = useAppSelector(({ users }) => users)
+	const { loading } = useAppSelector(({ users }) => users)
 	const {
 		control,
 		handleSubmit,
