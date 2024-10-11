@@ -189,7 +189,7 @@ const EnlonadosPage = () => {
 					<MobileDatePicker
 						label="Fecha inicio"
 						value={formData.start_date}
-						onChange={(date) => handleDayjsChange(date, 'start_date')}
+						onChange={(date: any) => handleDayjsChange(date, 'start_date')}
 						slotProps={{ textField: { size: 'small', fullWidth: true } }}
 					/>
 				</Grid>
@@ -197,7 +197,7 @@ const EnlonadosPage = () => {
 					<MobileDatePicker
 						label="Fecha fin"
 						value={formData.end_date}
-						onChange={(date) => handleDayjsChange(date, 'end_date')}
+						onChange={(date: any) => handleDayjsChange(date, 'end_date')}
 						slotProps={{ textField: { size: 'small', fullWidth: true } }}
 					/>
 				</Grid>

@@ -195,7 +195,7 @@ const AddNewEnlonado = () => {
 													}
 												}}
 												closeOnSelect
-												value={field.value as any}
+												value={field?.value as any}
 												onChange={(date) => field.onChange(date)}
 												label="Fecha"
 											/>

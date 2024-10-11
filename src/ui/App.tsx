@@ -10,6 +10,13 @@ import { useAppDispatch, useAppSelector } from '@/hooks/useStore'
 import { useEffect, useRef } from 'react'
 import { userActions } from '@/redux/reducers/users'
 
+import dayjs from 'dayjs'
+import localeData from 'dayjs/plugin/localeData'
+
+dayjs.extend(localeData)
+
+// Configura el primer día de la semana a domingo
+
 const theme = createTheme({
 	palette: {
 		primary: {
