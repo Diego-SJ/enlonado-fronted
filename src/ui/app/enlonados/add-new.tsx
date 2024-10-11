@@ -211,6 +211,7 @@ const AddNewEnlonado = () => {
 												<TimePicker
 													label="Hora inicio"
 													closeOnSelect
+													ampm
 													slotProps={{
 														textField: {
 															size: 'small',
@@ -240,6 +241,7 @@ const AddNewEnlonado = () => {
 												<TimePicker
 													label="Hora fin"
 													closeOnSelect
+													ampm
 													slotProps={{
 														textField: {
 															size: 'small',

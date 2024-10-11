@@ -31,6 +31,7 @@ import { useAppDispatch, useAppSelector } from '@/hooks/useStore'
 import { userActions } from '@/redux/reducers/users'
 import { User } from '@/redux/reducers/users/types'
 import AccountMenu from './account-menu'
+import { VERSION_APP } from '@/constants/versions'
 
 const drawerWidth = 240
 
@@ -235,7 +236,7 @@ export default function MainLayout() {
 				</List>
 				<div className="mt-auto text-center">
 					<Typography variant="caption" align="center">
-						Versión 1.0.1
+						Versión {VERSION_APP}
 					</Typography>
 				</div>
 			</Drawer>

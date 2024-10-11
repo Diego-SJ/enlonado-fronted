@@ -335,6 +335,7 @@ const EnlonadoEditPanel = ({ handleChange }: EnlonadoEditPanelProps) => {
 							control={control}
 							render={({ field }) => (
 								<TimePicker
+									ampm
 									slotProps={{
 										textField: {
 											size: 'small',
@@ -364,6 +365,7 @@ const EnlonadoEditPanel = ({ handleChange }: EnlonadoEditPanelProps) => {
 							control={control}
 							render={({ field }) => (
 								<TimePicker
+									ampm
 									slotProps={{
 										textField: {
 											size: 'small',
